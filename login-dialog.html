@@ -1,0 +1,40 @@
+<md-dialog aria-label="Login" ng-cloak>
+
+    <form name="loginForm" data-ng-submit="answer(username, password)">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Se connecter</h2>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container class="md-block">
+                    <label>Mail</label>
+                    <input ng-model="username" required>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Mot de passe</label>
+                    <input ng-model="password" type="password" required>
+                </md-input-container>
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button type="submit" class="md-primary"
+                       ng-class="{'md-raised md-hue-1': (loginForm.$dirty && loginForm.$valid) }"
+                       aria-label="Connexion">
+                Connexion
+            </md-button>
+            <md-button type="button" ng-click="cancel();"
+                       aria-label="Annuler">
+                Annuler
+            </md-button>
+        </md-dialog-actions>
+
+    </form>
+
+</md-dialog>
