@@ -1,0 +1,66 @@
+<md-dialog flex = "30" aria-label="Login" ng-cloak>
+
+    <form name="loginForm" data-ng-submit="answer(username, password)">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Nouvelle ressource</h2>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <md-input-container class="md-block">
+                    <label>Nom de la ressource</label>
+                    <input ng-model="name_ressource" required>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Type d'image</label>
+                    <md-select ng-model="image_type" value="Ubuntu" required>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Nombre de machines</label>
+                    <input type="number" min="1" max="9" ng-model="nb_device" required>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Nombre de CPU</label>
+                    <input type="number" min="1" max="9" ng-model="nb_CPU" required>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Mémoire Vive (en Mo)</label>
+                    <input type="number" min="1" max="10000" ng-model="ram" required> 
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Taille disque (en Go)</label>
+                    <input type="number" min="1" max="1000" ng-model="disk_size" required>
+                </md-input-container>
+
+                <md-input-container class="md-block">
+                    <label>Bande passante (en Kbit/s)</label>
+                    <input type="number" min="1" max="100000" ng-model="bandwidth" required>
+                </md-input-container>
+               
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button  type="submit" class="md-primary"
+                       ng-class="{'md-raised md-hue-1': (loginForm.$dirty && loginForm.$valid) }"
+                       aria-label="Connexion">
+                Demander
+            </md-button>
+            <md-button type="button" ng-click="cancel();"
+                       aria-label="Annuler">
+                Annuler
+            </md-button>
+        </md-dialog-actions>
+
+    </form>
+
+</md-dialog>
