@@ -288,3 +288,21 @@ body {
  display: inline-block;
  border-radius: 50%;
 }
+
+.gauge{
+  background-color: #67b9f7;/*21987f*/
+  text-align: center;
+}
+
+.row{
+  padding-top: 20px;
+}
+
+.page-header{
+  padding-bottom: 0px;
+  margin-bottom: 0px;
+}
+
+.page-wrapper{
+  padding-bottom: 20px;
+}
