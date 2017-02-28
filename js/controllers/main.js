@@ -18,7 +18,7 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) 
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
-      fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+      fullscreen: false // Only for -xs, -sm breakpoints.
     });
   };
 
@@ -31,7 +31,7 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) 
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
-      fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+      fullscreen: false // Only for -xs, -sm breakpoints.
     });
   };
 
@@ -83,6 +83,14 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) 
 
     $scope.answer = function(username, password) {
       console.log(username +" "+ password);
+      if(username === "essai" && password === "essai"){
+        $scope.connectionInfo.connected = true;
+        $scope.connectionInfo.firstname = username;
+        $scope.connectionInfo.lastname = password;
+        growl.success("Vous êtes connecté.",{title: 'Succès !', ttl: 3000});
+        $mdDialog.hide();
+      }
+      /*
       $http({
         method: 'POST',
         url: '/AutomaticAuto/api/connexion/connexion',
@@ -102,7 +110,7 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) 
         console.log("NOT CONNECTED");
         console.log(response);
         growl.error("Mauvais mail ou mot de passe.",{title: 'Erreur !', ttl: 3000});
-      });
+      });*/
     };
   }
 
