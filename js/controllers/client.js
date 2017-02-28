@@ -20,6 +20,11 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog) {
     });
   };
 
+  $scope.numberServices = 10;
+  $scope.numberContainers = 1;
+  $scope.numberImages = 4;
+  $scope.numberMachines = 3;
+
   function LoginDialogController($scope, $mdDialog) {
     $scope.hide = function() {
       $mdDialog.hide();
