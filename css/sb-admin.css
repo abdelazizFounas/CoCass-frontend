@@ -290,12 +290,12 @@ body {
 }
 
 .gauge{
-  background-color: #67b9f7;/*21987f*/
+  background-color: #67b9f7;
   text-align: center;
 }
 
 .row{
-  padding-top: 20px;
+  padding-top: 25px;
 }
 
 .page-header{
@@ -305,4 +305,8 @@ body {
 
 .page-wrapper{
   padding-bottom: 20px;
+}
+
+.center-button{
+  text-align: center;
 }

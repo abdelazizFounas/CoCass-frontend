@@ -11,12 +11,12 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <div class="col-lg-offset-2 col-lg-2">
-        <md-button class="md-raised md-warn" ng-click="">Insérer Docker Machine</md-button>
+      <div class="col-lg-6 center-button">
+        <md-button class="md-raised md-warn" ng-click="insertDockerMachine($event)">Insérer Docker Machine</md-button>
       </div>
 
-      <div class="col-lg-offset-4 col-lg-2">
-        <md-button class="md-raised md-warn" ng-click="">Stopper Docker Machine</md-button>
+      <div class="col-lg-6 center-button">
+        <md-button class="md-raised md-warn" ng-click="deleteDockerMachine($event)">Supprimer Docker Machine</md-button>
       </div>
     </div>
   </div>
@@ -31,37 +31,17 @@
     <div class="col-lg-12">
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
+          <ng-gauge size="300" type="full" thick="30" used="4" total="8" cap="butt" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
+          <ng-gauge size="300" type="full" thick="30" used="4" total="8" cap="butt" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
+          <ng-gauge size="300" type="full" thick="30" used="4" total="8" cap="butt" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
         </div>
       </div>
     </div>
@@ -71,37 +51,17 @@
     <div class="col-lg-12">
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
+          <ng-gauge size="300" type="full" thick="30" used="2" total="8" cap="butt" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
+          <ng-gauge size="300" type="full" thick="30" used="4" total="8" cap="butt" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
         </div>
       </div>
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
+          <ng-gauge size="300" type="full" thick="30" used="6" total="8" cap="butt" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
         </div>
       </div>
     </div>
@@ -109,40 +69,20 @@
 
   <div class="row">
     <div class="col-lg-12">
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
-      </div>
+      <md-divider></md-divider>
     </div>
   </div>
 
   <div class="row">
     <div class="col-lg-12">
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
+      <div class="col-lg-4 center-button">
+        <md-button class="md-raised md-warn" ng-click="usersContainers($event)">Containers utilisateurs</md-button>
       </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
+      <div class="col-lg-4 center-button">
+        <md-button class="md-raised md-warn" ng-click="availableImages($event)">Images disponibles</md-button>
       </div>
-      <div class="col-lg-4">
-        <div class="col-lg-offset-1 col-lg-10 gauge">
-          <ng-gauge size="300" type="full" thick="10" value="50" cap="round" label="CPU" foreground-color="#ffcc66" background-color="rgba(255,255,255, 0.4)" append=""></ng-gauge>
-        </div>
+      <div class="col-lg-4 center-button">
+        <md-button class="md-raised md-warn" ng-click="nodes($event)">Les noeuds</md-button>
       </div>
     </div>
   </div>
