@@ -4,12 +4,12 @@
 
 cocaas_app = angular.module('cocaasapp');
 
-cocaas_app.controller("controllerClient", function ($scope, $mdDialog) {
+cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http) {
   $scope.client();
 
   $scope.demand_ressource = function(ev) {
     $mdDialog.show({
-      controller: LoginDialogController,
+      controller: DemandRessourceController,
       scope: this,
       preserveScope: true,
       templateUrl: 'demand-ressource.html',
@@ -20,12 +20,87 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog) {
     });
   };
 
+    $scope.accordionConfig = {
+    debug: false,
+    animDur: 300,
+    expandFirst: false,
+    autoCollapse: true,
+    watchInternalChanges: false,
+    headerClass: '',
+    beforeHeader: '',
+    afterHeader: '<div class="drop-icon-wrapper sir-accordion-vertical-align"><i class="glyphicon glyphicon-chevron-down"></i></div>',
+    topContentClass: '',
+    beforeTopContent: '',
+    afterTopContent: '<div><p><small>I repeat through all accordion</small></p></div>',
+    bottomContentClass: '',
+    beforeBottomContent: '',
+    afterBottomContent: ''
+  };
+
+  $scope.accordionArray = 
+  [
+    {"title":"Level 1","topContent":"This is the top content attr","bottomContent":null,"subCollection":[
+      {"title":"This is a Level 2 Header!","topContent":"This is some nice text right here","bottomContent":null},
+      {"title":"Level 2","topContent":"<pre>And you can ad Html code directly to the content too</pre>","bottomContent":null},
+      {"title":"This Level 2 Header has another subCollection","topContent":null,"bottomContent":"<p>You can choose to put text after the subcollection if you prefer (or both before and after)</p>","subCollection":[
+        {"title":"And You got to the Level 3","topContent":"<span>Awesome text or HTML Content Here</span>"},
+        {"title":"Level 3","topContent":"You can also add AngularJS expressions","subCollection":[
+          {"title":"And another Level, Level 4","topContent":"<p>Awesome text or HTML Content Here</p>"},
+          {"title":"Level 4","topContent":"<p>Adding HTML</p><div style=\"display:inline-block;width:30%;height:100px;background:blue;margin:5px;padding:5px;\"></div><div style=\"display:inline-block;width:30%;height:100px;background:red;margin:5px;padding:5px;\"></div>"}
+        ]},
+        {"title":"Level 3","topContent":"<p>Awesome text or HTML Content Here</p>"}
+      ]},
+      {"title":"Level 2","topContent":"<p>You can keep adding Levels</p>","bottomContent":null, "subCollection":[
+        {"title":"Level 3","topContent":"<p>You can keep adding Levels</p>","bottomContent":null, "subCollection":[
+          {"title":"Level 4","topContent":"<p>You can keep adding Levels</p>","bottomContent":null}
+        ]}
+      ]}
+    ]},
+    {"title":"Level 1","topContent":null,"bottomContent":null,"subCollection":[
+      {"title":"Level 2","topContent":"<p>You Can set a Content, a subCollection of items, or combine them; making an element expand to a collection of items with text on the top, bottom or both!.</p>\n<p>Check the next items for examples</p>","bottomContent":null},
+      {"title":"Level 2","topContent":"This is a top content","bottomContent":"This text should be the content after the Items","subCollection":[
+        {"title":"Level 3 item","topContent":"Awesome text"},
+        {"title":"Level 3 item","topContent":"Awesome text"}
+      ]},
+      {"title":"Level 2","topContent":"<h3>sir-accordion is also perfect for responsive Design!</h3>\n<strong>The content uses VelocityJS, and you can resize the window and it will adapt pretty well</strong>\n<p>You can try it out by using the content provided or adding your own content and resizing your desktop window, it's awesome</p>","bottomContent":null}
+    ]},
+    {"title":"Level 1","topContent":"This one only goes to Level 1 and the content in it and this is the topContent","bottomContent":"this is the bottom content"},
+    {"title":"Level 1","topContent":"This is the topContent field on this element and it also has an array of items (subCollection array field in the JSON object)","bottomContent":null,"subCollection":[
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null}
+    ]},
+    {"title":"Level 1","topContent":null,"bottomContent":null,"subCollection":[
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null}
+    ]},
+    {"title":"Level 1","topContent":null,"bottomContent":null,"subCollection":[
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null}
+    ]},
+    {"title":"Level 1","topContent":null,"bottomContent":null,"subCollection":[
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null},
+      {"title":"Level 2","topContent":"Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmodtempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam,quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodoconsequat. Duis aute irure dolor in reprehenderit in voluptate velit essecillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat nonproident, sunt in culpa qui officia deserunt mollit anim id est laborum.","bottomContent":null}
+    ]}
+  ];
+
+
   $scope.numberServices = 10;
   $scope.numberContainers = 1;
   $scope.numberImages = 4;
   $scope.numberMachines = 3;
 
-  function LoginDialogController($scope, $mdDialog) {
+  /*$scope.opt_images = [
+    { id: 1, name: 'Ubuntu' },
+    { id: 2, name: 'Debian' },
+    { id: 3, name: 'MySQL' }
+  ];
+  $scope.image_type = { id: 1, name: 'Ubuntu' };*/
+
+  function DemandRessourceController($scope, $mdDialog) {
     $scope.hide = function() {
       $mdDialog.hide();
     };
@@ -34,27 +109,18 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog) {
       $mdDialog.cancel();
     };
 
-    $scope.answer = function(username, password) {
-      console.log(username +" "+ password);
+    $scope.answer = function(name_service,image_name,nb_replicat,list_ports,commande) {
+      listports=list_ports.replace(/ /g,'').split(",").map(Number)
+      console.log(listports)
       $http({
         method: 'POST',
         url: '/AutomaticAuto/api/connexion/connexion',
         data: {
-          mail: username,
-          pwd: password
         }
       }).then(function successCallback(response) {
-        console.log("CONNECTED");
-        console.log(response);
-        $scope.connectionInfo.connected = true;
-        $scope.connectionInfo.firstname = response.data.firstName;
-        $scope.connectionInfo.lastname = response.data.lastName;
-        growl.success("Vous êtes connecté.",{title: 'Succès !', ttl: 3000});
-        $mdDialog.hide();
+        
       }, function errorCallback(response) {
-        console.log("NOT CONNECTED");
-        console.log(response);
-        growl.error("Mauvais mail ou mot de passe.",{title: 'Erreur !', ttl: 3000});
+        
       });
     };
   }
