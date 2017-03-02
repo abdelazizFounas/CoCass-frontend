@@ -62,6 +62,37 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog) {
     $scope.close = function() {
       $mdDialog.hide();
     };
+
+    $scope.groups = [
+    {
+      title: 'Service : toto.titi',
+      content: 'Tous les containers de toto.titi',
+      table: [{
+        name: 'toto.titi.1',
+        ip: '192.168.1.2',
+        ports: '80:760, 47:679'
+      },{
+        name: 'toto.titi.2',
+        ip: '192.168.1.2',
+        ports: '80:760, 47:679'
+      }
+      ]
+    },
+    {
+      title: 'Service : toto.tata',
+      content: 'Tous les containers de toto.tata',
+      table: [{
+        name: 'toto.tata.1',
+        ip: '192.168.1.2',
+        ports: '80:760, 47:679'
+      },{
+        name: 'toto.tata.1',
+        ip: '192.168.1.2',
+        ports: '80:760, 47:679'
+      }
+      ]
+    }
+  ];
   }
 
   $scope.availableImages = function(ev) {

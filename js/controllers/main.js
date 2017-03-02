@@ -2,7 +2,7 @@
  * CoCaas - Swarm
  */
 
-cocaas_app = angular.module('cocaasapp', ['ngRoute', 'ngMaterial', 'angular-growl', 'angularjs-gauge', 'sir-accordion']);
+cocaas_app = angular.module('cocaasapp', ['ngRoute', 'ngMaterial', 'angular-growl', 'angularjs-gauge', 'sir-accordion', 'ngAnimate', 'ngSanitize', 'ui.bootstrap']);
 
 cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) {
   document.addEventListener('gesturestart', function (e) {
