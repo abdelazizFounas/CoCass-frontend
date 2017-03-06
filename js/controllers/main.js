@@ -2,11 +2,29 @@
  * CoCaas - Swarm
  */
 
-cocaas_app = angular.module('cocaasapp', ['ngRoute', 'ngMaterial', 'angular-growl', 'angularjs-gauge', 'sir-accordion', 'ngAnimate', 'ngSanitize', 'ui.bootstrap']);
+cocaas_app = angular.module('cocaasapp', ['ngRoute', 'ngMaterial', 'angular-growl', 'angularjs-gauge', 'ngAnimate', 'ngSanitize', 'ui.bootstrap']);
 
-cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) {
+cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location, $http, growl) {
+
   document.addEventListener('gesturestart', function (e) {
     e.preventDefault();
+  });
+
+  $scope.connectionInfo = {
+    connected: false
+  };
+
+  $http({
+    method: 'POST',
+    url: '/User/checkconnection',
+  }).then(function successCallback(response) {
+    $scope.connectionInfo.connected = true;
+    $scope.connectionInfo.firstname = response.data.firstname;
+    $scope.connectionInfo.lastname = response.data.lastname;
+    growl.success("Vous êtes déjà connecté.",{title: 'Succès !', ttl: 3000});
+    $mdDialog.hide();
+  }, function errorCallback(response) {
+    growl.success("Pas connecté.",{title: 'Succès !', ttl: 3000});
   });
 
   $scope.connect = function(ev) {
@@ -45,27 +63,22 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) 
     };
 
     $scope.answer = function(firstname, lastname, mail, password) {
-      console.log(firstname +" "+ lastname  +" "+  mail +" "+ password);
-
       $http({
         method: 'POST',
-        url: '/AutomaticAuto/api/connexion/newAccount',
+        url: '/User/new',
         data: {
-          email: mail,
-          firstName: firstname,
-          lastName: lastname,
-          passwdHash: password
+          username: mail,
+          firstname: firstname,
+          lastname: lastname,
+          password: password
         }
       }).then(function successCallback(response) {
-        console.log("NEW ACCOUNT");
-        console.log(response);
         $scope.connectionInfo.connected = true;
-        $scope.connectionInfo.firstname = firstname;
-        $scope.connectionInfo.lastname = lastname;
+        $scope.connectionInfo.firstname = response.data.firstname;
+        $scope.connectionInfo.lastname = response.data.lastname;
         growl.success("Le compte a été créé.",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
       }, function errorCallback(response) {
-        console.log("NO NEW ACCOUNT");
         console.log(response);
         growl.error("Le compte n'a pas été créé.",{title: 'Erreur !', ttl: 3000});
       });
@@ -82,44 +95,38 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location) 
     };
 
     $scope.answer = function(username, password) {
-      console.log(username +" "+ password);
-      if(username === "essai" && password === "essai"){
-        $scope.connectionInfo.connected = true;
-        $scope.connectionInfo.firstname = username;
-        $scope.connectionInfo.lastname = password;
-        growl.success("Vous êtes connecté.",{title: 'Succès !', ttl: 3000});
-        $mdDialog.hide();
-      }
-      /*
       $http({
         method: 'POST',
-        url: '/AutomaticAuto/api/connexion/connexion',
+        url: '/User/login',
         data: {
-          mail: username,
-          pwd: password
+          username: username,
+          password: password
         }
       }).then(function successCallback(response) {
-        console.log("CONNECTED");
         console.log(response);
         $scope.connectionInfo.connected = true;
-        $scope.connectionInfo.firstname = response.data.firstName;
-        $scope.connectionInfo.lastname = response.data.lastName;
+        $scope.connectionInfo.firstname = response.data.firstname;
+        $scope.connectionInfo.lastname = response.data.lastname;
         growl.success("Vous êtes connecté.",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
       }, function errorCallback(response) {
-        console.log("NOT CONNECTED");
         console.log(response);
         growl.error("Mauvais mail ou mot de passe.",{title: 'Erreur !', ttl: 3000});
-      });*/
+      });
     };
   }
 
-  $scope.connectionInfo = {
-    connected: true
-  };
-
   $scope.disconnect = function(e){
     $scope.connectionInfo.connected = false;
+
+    $http({
+      method: 'POST',
+      url: '/User/logout'
+    }).then(function successCallback(response) {
+      growl.success("Vous êtes déconnecté.",{title: 'Succès !', ttl: 3000});
+    }, function errorCallback(response) {
+      growl.error("Problème.",{title: 'Erreur !', ttl: 3000});
+    });
 
     var pgurl = window.location.href.substr(window.location.href.lastIndexOf("/")+1);
 
