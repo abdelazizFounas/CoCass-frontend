@@ -8,7 +8,6 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
       <meta name="description" content="">
       <meta name="author" content="">
-      <!-- <meta http-equiv="Content-Security-Policy" content="default-src 'unsafe-inline' 'unsafe-eval' *; style-src 'unsafe-inline' 'unsafe-eval' *; media-src 'unsafe-inline' 'unsafe-eval' *; connect-src 'unsafe-inline' 'unsafe-eval' *; script-src 'unsafe-inline' 'unsafe-eval' *; img-src 'unsafe-inline' 'unsafe-eval' *"> -->
 
       <title>CoCaas - Swarm</title>
 
@@ -49,10 +48,6 @@
                   <li ng-if="connectionInfo.connected == true" class="dropdown">
                       <a data-ng-cloak class="dropdown-toggle pointer" data-toggle="dropdown"><i class="fa fa-user"></i> {{connectionInfo.firstname}} {{connectionInfo.lastname}} <b class="caret"></b></a>
                       <ul class="dropdown-menu">
-                          <li>
-                              <a class="pointer"><i class="fa fa-fw fa-envelope"></i> Messages</a>
-                          </li>
-                          <li class="divider"></li>
                           <li>
                               <a class="pointer" ng-click="disconnect($event)"><i class="fa fa-fw fa-power-off"></i> Se déconnecter</a>
                           </li>
