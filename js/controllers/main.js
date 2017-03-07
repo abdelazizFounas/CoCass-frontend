@@ -22,9 +22,7 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location, 
     $scope.connectionInfo.firstname = response.data.firstname;
     $scope.connectionInfo.lastname = response.data.lastname;
     growl.success("Vous êtes déjà connecté.",{title: 'Succès !', ttl: 3000});
-    $mdDialog.hide();
   }, function errorCallback(response) {
-    growl.success("Pas connecté.",{title: 'Succès !', ttl: 3000});
   });
 
   $scope.connect = function(ev) {
@@ -32,7 +30,7 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location, 
       controller: LoginDialogController,
       scope: this,
       preserveScope: true,
-      templateUrl: 'login-dialog.html',
+      templateUrl: 'html/login-dialog.html',
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
@@ -45,7 +43,7 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location, 
       controller: CreateDialogController,
       scope: this,
       preserveScope: true,
-      templateUrl: 'create-dialog.html',
+      templateUrl: 'html/create-dialog.html',
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
@@ -205,16 +203,16 @@ cocaas_app.controller("controllerMain", function ($scope, $mdDialog, $location, 
     function($routeProvider) {
       $routeProvider
       .when('/client', {
-          templateUrl: 'client.html',
+          templateUrl: 'html/client.html',
           controller: 'controllerClient'
       }).when('/provider', {
-          templateUrl: 'provider.html',
+          templateUrl: 'html/provider.html',
           controller: 'controllerProvider'
       }).when('/preferences', {
-          templateUrl: 'preferences.html',
+          templateUrl: 'html/preferences.html',
           controller: 'controllerPreferences'
       }).when('/about', {
-          templateUrl: 'about.html',
+          templateUrl: 'html/about.html',
           controller: 'controllerAbout'
       }).otherwise({
           redirectTo: '/about'

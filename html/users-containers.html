@@ -13,8 +13,8 @@
               <div uib-accordion-group class="panel-default" heading="{{group.title}}" ng-repeat="group in groups">
                 <uib-accordion-heading>
                   {{ group.title }}
-                  <md-button type="button" ng-click="close($index)" aria-label="Close">Scale</md-button>
-                  <md-button type="button" ng-click="close($index)" aria-label="Close">Supprimer</md-button>
+                  <md-button type="button" ng-click="test($index, $event)" aria-label="Test">Scale</md-button>
+                  <md-button type="button" ng-click="test($index, $event)" aria-label="Test">Supprimer</md-button>
                 </uib-accordion-heading>
                 {{group.content}}
                 <div ng-repeat="container in group.table">
