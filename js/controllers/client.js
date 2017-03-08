@@ -2,9 +2,9 @@
  * CoCaas - Swarm
  */
 
-cocaas_app = angular.module('cocaasapp');
+cocaas_app = angular.module('cocaasapp', 'angular-growl');
 
-cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http) {
+cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, growl) {
   $scope.client();
 
   $scope.demand_ressource = function(ev) {
@@ -12,7 +12,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http) {
       controller: DemandRessourceController,
       scope: this,
       preserveScope: true,
-      templateUrl: 'demand-ressource.html',
+      templateUrl: 'html/demand-ressource.html',
       parent: angular.element(document.body),
       targetEvent: ev,
       clickOutsideToClose:true,
@@ -99,16 +99,22 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http) {
 
     $scope.answer = function(name_service,image_name,nb_replicat,list_ports,commande) {
       listports=list_ports.replace(/ /g,'').split(",").map(Number)
-      console.log(listports)
       $http({
         method: 'POST',
-        url: '/AutomaticAuto/api/connexion/connexion',
-        data: {
+        url: '/Services/new',
+        data: {          
+          name: name_service,
+          nbReplicas: image_name,
+          image: nb_replicat,
+          commande: commande,
+          bindPorts: list_ports
         }
       }).then(function successCallback(response) {
+        growl.success("Création du service " + name_service + " réussie!",{title: 'Succès !', ttl: 3000});
         
       }, function errorCallback(response) {
-        
+        growl.error("Création du service échouée",{title: 'Erreur !', ttl: 3000});
+
       });
     };
   }
