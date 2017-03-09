@@ -9,6 +9,17 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog) {
 
   $scope.mdDialogOpenned = 0;
 
+  $scope.cpuUsed = 4;
+  $scope.cpuTotal = 8;
+  $scope.ramUsed = 4;
+  $scope.ramTotal = 8;
+  $scope.hddUsed = 4;
+  $scope.hddTotal = 8;
+
+  $scope.cpuValue = 50;
+  $scope.ramValue = 50;
+  $scope.hddValue = 50;
+
   $scope.insertDockerMachine = function(ev) {
     $mdDialog.show({
       controller: InsertDockerMachineController,
