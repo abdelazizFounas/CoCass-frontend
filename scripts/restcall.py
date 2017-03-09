@@ -27,10 +27,49 @@ else:
     return True
 return False
 
-def api_log_in((user, password)):
-    # TODO
-    return True
+# Login to the server
+# @param username
+# @param password
+# @return : True or False according to the success of the authentication
+def api_log_in((username, password)):
+    url = config.SERVER_URL + "User/login/" + username + "/" + password
+    r = requests.request('POST', url)
+    if r.status_code == config.CODE_SUCCESS:
+        return True
+    return False
 
-def send_config(config):
+# Creates a new user (asks logs)
+# @return : True or False according to the success of the creation
+def create_user():
+    username, password = get_logs()
+    url = config.SERVER_URL + "User/new/" + username + "/" + password
+    r = requests.request('POST', url)
+    if r.status_code == config.CODE_SUCCESS:
+        return True
+    return False
+
+def send_system_config():
+    ram = psutil.virtual_memory().total
+    swap = psutil.swap_memory().total
+    disk_total, disk_free = psutil.disk_usage('.').total, psutil.disk_usage('.').free
+    cpu_nb = psutil.cpu_count()
+    # url = config.SERVER_URL +
     # TODO
-    return True
+
+def send_current_config():
+    ram = psutil.virtual_memory().percent
+    swap = psutil.swap_memory().percent
+    disk = 0 #TODO
+    # Detect wich CPU is used by the docker-machine
+    cpu_usage = psutil.cpu_percent(interval=1, percpu=True)
+    # url = config.SERVER_URL +
+
+# Send the configuration to the config.SERVER_URL
+# @param config : A dict with KEY_CONFIG_CPU, config.KEY_CONFIG_RAM and config.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
+# @return : True or False according to the success of the registration
+def send_config(config):
+    url = config.SERVER_URL + "Providers/new/" + config[config.KEY_CONFIG_CPU] + "/" + config[config.KEY_CONFIG_RAM] + config[config.KEY_CONFIG_HDD]
+    r = requests.request('POST', url)
+    if r.status_code == config.CODE_SUCCESS:
+        return True
+    return False
