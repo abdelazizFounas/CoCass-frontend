@@ -17,15 +17,15 @@ def create_user((user, password)):
 # @param attempts : The number of logging attempts
 # @return : True or False, accordig to the success of the logging
 def log_in(attempts):
-t = attempts
-while t > 0:
-if not api_log_in(get_logs()):
-    t -= 1
-    print "Log in failed. Attempts remaining : " + str(t)
-else:
-    print "Login successfull."
-    return True
-return False
+    t = attempts
+    while t > 0:
+    if not api_log_in(get_logs()):
+        t -= 1
+        print "Log in failed. Attempts remaining : " + str(t)
+    else:
+        print "Login successfull."
+        return True
+    return False
 
 # Login to the server
 # @param username
