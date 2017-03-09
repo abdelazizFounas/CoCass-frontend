@@ -117,7 +117,7 @@ def get_free_port():
 # @param protocol : Protocol to use on the port
 # @return : (bool, String) True or False according to the succes of the operation, with the name of the rule
 def binding_rule_create(porthost, portdm, protocol):
-    rule_name = "rule" + str(porthost)
+    rule_name = "rule" + str(porthost) + protocol
     cmd = "VBoxManage controlvm " + config.DOCKER_MACHINE_NAME + " natpf1 " + rule_name + "," + str(protocol) + ",," + str(porthost) + ",," + str(portdm)
     # VBoxManage controlvm dm-iaas natpf1 rule80,tcp,,80,,80
 

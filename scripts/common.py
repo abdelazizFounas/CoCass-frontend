@@ -10,7 +10,7 @@ import sys
 # Constants definition
 DOCKER_MACHINE_NAME = "dm-iaas"
 
-SERVER_IP = "172.17.0.3"
+SERVER_IP = "localhost"
 SERVER_PORT = "5000"
 SERVER_URL = "http://" + SERVER_IP + ":" + SERVER_PORT + "/"
 

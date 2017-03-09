@@ -6,10 +6,19 @@ This Python script contains all the function to call the cocass rest API
 
 import common
 import requests
+import json
 
-def create_user((user, password)):
-    url = common.SERVER_URL + "User/new/"  + user + "/" + password
-    r = requests.post(url)
+# Creates a new user
+# @param username
+# @param password
+# @param firstname
+# @param lastname
+# @return : True or False according to the success of the creation
+def create_user((username, password, firstname, lastname)):
+    url = common.SERVER_URL + "User/new"
+    headers = {'content-type': 'application/json'}
+    payload = {'username': username, 'password': password, 'firstname': firstname, 'lastname':lastname}
+    r = requests.post(url, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
 
@@ -19,12 +28,12 @@ def create_user((user, password)):
 def log_in(attempts):
     t = attempts
     while t > 0:
-    if not api_log_in(get_logs()):
-        t -= 1
-        print "Log in failed. Attempts remaining : " + str(t)
-    else:
-        print "Login successfull."
-        return True
+        if not api_log_in(get_logs()):
+            t -= 1
+            print "Log in failed. Attempts remaining : " + str(t)
+        else:
+            print "Login successfull."
+            return True
     return False
 
 # Login to the server
@@ -32,19 +41,9 @@ def log_in(attempts):
 # @param password
 # @return : True or False according to the success of the authentication
 def api_log_in((username, password)):
-    url = config.SERVER_URL + "User/login/" + username + "/" + password
+    url = common.SERVER_URL + "User/login/" + username + "/" + password
     r = requests.request('POST', url)
-    if r.status_code == config.CODE_SUCCESS:
-        return True
-    return False
-
-# Creates a new user (asks logs)
-# @return : True or False according to the success of the creation
-def create_user():
-    username, password = get_logs()
-    url = config.SERVER_URL + "User/new/" + username + "/" + password
-    r = requests.request('POST', url)
-    if r.status_code == config.CODE_SUCCESS:
+    if r.status_code == common.CODE_SUCCESS:
         return True
     return False
 
@@ -53,7 +52,7 @@ def send_system_config():
     swap = psutil.swap_memory().total
     disk_total, disk_free = psutil.disk_usage('.').total, psutil.disk_usage('.').free
     cpu_nb = psutil.cpu_count()
-    # url = config.SERVER_URL +
+    # url = common.SERVER_URL +
     # TODO
 
 def send_current_config():
@@ -62,14 +61,19 @@ def send_current_config():
     disk = 0 #TODO
     # Detect wich CPU is used by the docker-machine
     cpu_usage = psutil.cpu_percent(interval=1, percpu=True)
-    # url = config.SERVER_URL +
+    # url = common.SERVER_URL +
 
-# Send the configuration to the config.SERVER_URL
-# @param config : A dict with KEY_CONFIG_CPU, config.KEY_CONFIG_RAM and config.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
+# Send the configuration to the common.SERVER_URL
+# @param config : A dict with KEY_CONFIG_CPU, common.KEY_CONFIG_RAM and common.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
 # @return : True or False according to the success of the registration
 def send_config(config):
-    url = config.SERVER_URL + "Providers/new/" + config[config.KEY_CONFIG_CPU] + "/" + config[config.KEY_CONFIG_RAM] + config[config.KEY_CONFIG_HDD]
+    url = common.SERVER_URL + "Providers/new/" + config[common.KEY_CONFIG_CPU] + "/" + config[common.KEY_CONFIG_RAM] + config[common.KEY_CONFIG_HDD]
     r = requests.request('POST', url)
-    if r.status_code == config.CODE_SUCCESS:
+    if r.status_code == common.CODE_SUCCESS:
         return True
     return False
+
+def swarm_info():
+    url = common.SERVER_URL + "User/swarm"
+    r = True # TODO
+    token = r['swarmToken']
