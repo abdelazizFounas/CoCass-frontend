@@ -44,13 +44,14 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         url: '/Services/new',
         data: {
           name: name_service,
-          nbReplicas: image_name,
-          image: nb_replicat,
+          nbReplicas: nb_replicat,
+          image: image_name,
           commande: commande,
           bindPorts: list_ports
         }
       }).then(function successCallback(response) {
         growl.success("Création du service " + name_service + " réussie!",{title: 'Succès !', ttl: 3000});
+        $mdDialog.hide();
       }, function errorCallback(response) {
         growl.error("Création du service échouée",{title: 'Erreur !', ttl: 3000});
       });
@@ -211,7 +212,13 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
       method: 'GET',
       url: '/User/services'
     }).then(function successCallback(response) {
-      $scope.services = response.services;
+      $scope.services = response.data.services;
+
+      angular.forEach($scope.services, function(service) {
+        angular.forEach(service.services, function(container) {
+          container.nomImage = container.nomImage.split('@')[0];
+        });
+      });
     }, function errorCallback(response) {
       console.log(response);
       console.log("Error while calling the update services view function.");
@@ -219,8 +226,14 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
   }
 
   $(function() {
-     $scope.updateServicesView();
-     $interval($scope.updateServicesView, 5000);
+    angular.forEach($scope.services, function(service) {
+      angular.forEach(service.services, function(container) {
+        container.nomImage = container.nomImage.split('@')[0];
+        container.datecreation = new Date(container.datecreation);
+      });
+    });
+    $scope.updateServicesView();
+    $interval($scope.updateServicesView, 5000);
   });
 
 });

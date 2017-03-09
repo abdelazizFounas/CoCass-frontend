@@ -73,7 +73,7 @@
                 </uib-accordion-heading>
                 	La liste de containers :
                 <div ng-repeat="container in service.services" >
-                  NAME : {{container.NomService}} | IP : {{container.ipMachine}} | PORTS : {{container.ports}}
+                  NAME : {{container.NomService}} | IMAGE : {{container.nomImage}} | IP : {{container.ipMachine}} | PORTS : {{container.ports}} | DATE : {{container.datecreation | date:'Le dd/MM/yyyy à HH:mm:ss'}}
                    	<md-button type="button" ng-click="delete_container($parent.$index, $index, $event)" class="md-raised md-warn" aria-label="Test">Supprimer</md-button>
                 </div>
               </div>
