@@ -145,7 +145,7 @@ def main():
     if check_installation():
         if not check_docker_machine(config.DOCKER_MACHINE_NAME):
             print "Before creating a new docker-machine, you need to register to send its configuration to the manager."
-            if not common.log_in(3):
+            if not restcall.log_in(3):
                 sys.exit(1)
             restcall.send_config(create_docker_machine(config.DOCKER_MACHINE_NAME))
         else:

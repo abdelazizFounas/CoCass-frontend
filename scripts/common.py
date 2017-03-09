@@ -74,20 +74,6 @@ def query_string(question, confidential):
     else:
         return raw_input(question)
 
-# User logging to the website
-# @param attempts : The number of logging attempts
-# @return : True or False, accordig to the success of the logging
-def log_in(attempts):
-    t = attempts
-    while t > 0:
-        if not restcall.log_in(get_logs()):
-            t -= 1
-            print "Log in failed. Attempts remaining : " + str(t)
-        else:
-            print "Login successfull."
-            return True
-    return False
-
 # Query log information to user
 # @return : A tupple (username, password)
 def get_logs():
