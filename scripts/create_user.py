@@ -14,11 +14,11 @@ def main():
     args = parser.parse_args()
 
     if(args.user and args.password):
-        print restcall.create_user((args.user, args.password))
+        print restcall.create_user((args.user, args.password, "", ""))
     elif(args.user):
-        print restcall.create_user((args.user, common.query_string("Password : ", True)))
+        print restcall.create_user((args.user, common.query_string("Password : ", True), "", ""))
     elif(args.password):
-        print restcall.create_user((common.query_string("Username : ", False), args.password))
+        print restcall.create_user((common.query_string("Username : ", False), args.password, "", ""))
     else:
         print restcall.create_user(common.get_logs())
 

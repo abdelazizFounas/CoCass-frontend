@@ -28,7 +28,7 @@ def create_user((username, password, firstname, lastname)):
 def log_in(attempts):
     t = attempts
     while t > 0:
-        if not api_log_in(get_logs()):
+        if not api_log_in(common.get_logs()):
             t -= 1
             print "Log in failed. Attempts remaining : " + str(t)
         else:
@@ -55,6 +55,8 @@ def send_system_config():
     # url = common.SERVER_URL +
     # TODO
 
+# TODO
+# Send the configuration
 def send_current_config():
     ram = psutil.virtual_memory().percent
     swap = psutil.swap_memory().percent
@@ -73,7 +75,7 @@ def send_config(config):
         return True
     return False
 
-def swarm_info():
-    url = common.SERVER_URL + "User/swarm"
-    r = True # TODO
-    token = r['swarmToken']
+def swarm_token():
+    url = common.SERVER_URL + "swarm"
+    r = requests.get(url)
+    return r.json()['swarmToken']

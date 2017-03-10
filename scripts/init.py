@@ -17,15 +17,17 @@ import common
 
 '''
 ON WORKING :
-    - Detect services' ports needs (Imad) --> Changed
     - Send running configuration / Send configuration
     - Arguments
+    - Internet access to docker-machine + VPN
 
 Libraries :
     - docker
     - requests
     - psutil
 '''
+
+rules_list = []
 
 # Installation checking
 # Checks if docker, docker-machine and virtualbox are installed
@@ -52,14 +54,14 @@ def check_docker_machine(name):
 
 # Start a docker-machine
 # @param name : The name of the docker-machine to start_docker_machine
-# @return : Nothing
+# @return : True or False according to the success of the docker-machine start
 def start_docker_machine(name):
     cmd = "docker-machine start " + name
     try:
         subprocess.check_output(cmd.split())
+        return True
     except Exception:
-        # Not a critical exception : docker-machine already started
-        return
+        return False
 
 # Create a docker-machine
 # This function will ask to the user if he want to give a specific configuration to the docker-machine
@@ -74,21 +76,32 @@ def create_docker_machine(name):
         cpu = common.query_int("\tNumber of CPU : ")
         disk = common.query_int("\tDisk space (Go) : ")
         cmd_create_dm = "docker-machine create -d virtualbox --virtualbox-disk-size " + str(disk) + " --virtualbox-cpu-count " + str(cpu) + " --virtualbox-memory " + str(ram) + " " + name
-        config = {config.KEY_CONFIG_RAM: str(ram), config.KEY_CONFIG_CPU: str(cpu), config.KEY_CONFIG_HDD: str(disk)}
+        config = {common.KEY_CONFIG_RAM: str(ram), common.KEY_CONFIG_CPU: str(cpu), common.KEY_CONFIG_HDD: str(disk)}
     else:
         cmd_create_dm = "docker-machine create -d virtualbox " + name
-        config = {config.KEY_CONFIG_RAM: "-1", config.config.KEY_CONFIG_CPU: "-1", config.KEY_CONFIG_HDD: "-1"}
+        config = {common.KEY_CONFIG_RAM: "-1", common.KEY_CONFIG_CPU: "-1", common.KEY_CONFIG_HDD: "-1"}
 
     ps_creation = subprocess.Popen(cmd_create_dm.split(), stdout=subprocess.PIPE)
     create_dm_out, check_dm_error = ps_creation.communicate()
     print "Docker-machine created."
     return config
 
+# Remove a docker-machine
+# @param name : The name of the docker-machine to remove_docker_machine
+# @return : True or false according to the success of the remove
+def remove_docker_machine(name):
+    cmd = "docker-machine rm -y " + name
+    try:
+        subprocess.check_output(cmd.split()).split('\n')
+        return True
+    except Exception :
+        return False
+
 # Switch the current docker-machine to another one
 # @param name : The name of the docker-machine to switch to
 # @return : A docker.Client object using the docker-machine
 def switch_dm(name):
-    cmd_env = "docker-machine env " + config.DOCKER_MACHINE_NAME
+    cmd_env = "docker-machine env " + common.DOCKER_MACHINE_NAME
     try:
         result_env = [l for l in subprocess.check_output(cmd_env.split()).split('\n') if not l.startswith('#')]
     except Exception:
@@ -118,8 +131,7 @@ def get_free_port():
 # @return : (bool, String) True or False according to the succes of the operation, with the name of the rule
 def binding_rule_create(porthost, portdm, protocol):
     rule_name = "rule" + str(porthost) + protocol
-    cmd = "VBoxManage controlvm " + config.DOCKER_MACHINE_NAME + " natpf1 " + rule_name + "," + str(protocol) + ",," + str(porthost) + ",," + str(portdm)
-    # VBoxManage controlvm dm-iaas natpf1 rule80,tcp,,80,,80
+    cmd = "VBoxManage controlvm " + common.DOCKER_MACHINE_NAME + " natpf1 " + rule_name + "," + str(protocol) + ",," + str(porthost) + ",," + str(portdm)
 
     try:
         ps_creation = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -132,7 +144,7 @@ def binding_rule_create(porthost, portdm, protocol):
 # @param rule_name : The name of the rule to delete
 # @return : True or False according to the succes of the remove
 def binding_rule_remove(rule_name):
-    cmd = "VBoxManage controlvm " + config.DOCKER_MACHINE_NAME + " natpf1 delete " + rule_name
+    cmd = "VBoxManage controlvm " + common.DOCKER_MACHINE_NAME + " natpf1 delete " + rule_name
 
     try:
         ps_creation = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
@@ -143,18 +155,24 @@ def binding_rule_remove(rule_name):
 
 def main():
     if check_installation():
-        if not check_docker_machine(config.DOCKER_MACHINE_NAME):
+        if not start_docker_machine(common.DOCKER_MACHINE_NAME):
+            if check_docker_machine(common.DOCKER_MACHINE_NAME):
+                print "A docker-machine named " + common.DOCKER_MACHINE_NAME " already exists but can not be started. Let's remove it and create a new one !"
+                remove_docker_machine(common.DOCKER_MACHINE_NAME)
             print "Before creating a new docker-machine, you need to register to send its configuration to the manager."
             if not restcall.log_in(3):
                 sys.exit(1)
-            restcall.send_config(create_docker_machine(config.DOCKER_MACHINE_NAME))
-        else:
-            start_docker_machine(config.DOCKER_MACHINE_NAME)
-        client = switch_dm(config.DOCKER_MACHINE_NAME)
-        binding_rule_create(2377, 2377, "tcp")
-        binding_rule_create(7946, 7946, "tcp")
-        binding_rule_create(7946, 7946, "udp")
-        binding_rule_create(4789, 4789, "udp")
+            restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME))
+
+        client = switch_dm(common.DOCKER_MACHINE_NAME)
+
+        rule_list.append(binding_rule_create(2377, 2377, "tcp"))[1]
+        rule_list.append(binding_rule_create(7946, 7946, "tcp"))[1]
+        rule_list.append(binding_rule_create(7946, 7946, "udp"))[1]
+        rule_list.append(binding_rule_create(4789, 4789, "udp"))[1]
+
+        # TODO Review the listen_addr (eth1)
+        client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")
     else:
         print "You first need to install docker, docker-machine and VirtualBox."
         sys.exit(1)
