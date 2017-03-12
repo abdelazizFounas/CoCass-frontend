@@ -10,10 +10,10 @@ cocaas_app = angular.module('cocaasapp');
 cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, growl, $interval) {
   $scope.client();
 
-  $scope.numberServices = 10;
-  $scope.numberContainers = 1;
-  $scope.numberImages = 4;
-  $scope.numberMachines = 3;
+  $scope.numberServices = 0;
+  $scope.numberContainers = 0;
+  $scope.numberImages = 0;
+  $scope.numberMachines = 0;
 
   $scope.demand_ressource = function(ev) {
     $mdDialog.show({
@@ -214,11 +214,30 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
     }).then(function successCallback(response) {
       $scope.services = response.data.services;
 
+      $scope.numberServices = 0;
+      $scope.numberContainers = 0;
+      $scope.numberImages = 0;
+      $scope.numberMachines = 0;
+
+      var arrayImages = [];
+      var arrayIP = [];
+
       angular.forEach($scope.services, function(service) {
+        $scope.numberServices++;
         angular.forEach(service.services, function(container) {
+          $scope.numberContainers++;
           container.nomImage = container.nomImage.split('@')[0];
+          if (arrayImages.indexOf(container.nomImage) < 0) {
+            arrayImages.push(container.nomImage);
+          }
+          if (arrayIP.indexOf(container.ipMachine) < 0) {
+            arrayIP.push(container.ipMachine);
+          }
         });
       });
+
+      $scope.numberImages = arrayImages.length;
+      $scope.numberMachines = arrayIP.length;
     }, function errorCallback(response) {
       console.log(response);
       console.log("Error while calling the update services view function.");
