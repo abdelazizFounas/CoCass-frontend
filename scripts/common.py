@@ -21,6 +21,8 @@ KEY_CONFIG_CPU = "cpu"
 KEY_CONFIG_RAM = "ram"
 KEY_CONFIG_HDD = "hdd"
 
+RULE_FILE = "rules.txt"
+
 
 
 # Query a yes/no answer
@@ -80,6 +82,31 @@ def get_logs():
     user = query_string("Username : ", False)
     pswd = query_string("Password : ", True)
     return (user, pswd)
+
+def exec_cmd(cmd):
+    try:
+        subprocess.check_output(cmd.split()).split('\n')
+        return True
+    except Exception :
+        return False
+
+# Bind a VirtualBox port on the physical host
+# @param portdm : The docker-machine's port to bind on the host
+# @param porthost : The corresponding port host to access to the docker-machine's one
+# @param protocol : Protocol to use on the port
+# @return : (bool, String) True or False according to the succes of the operation, with the name of the rule
+def binding_rule_create(porthost, portdm, protocol):
+    rule_name = "rule" + str(porthost) + protocol
+    cmd = "VBoxManage controlvm " + DOCKER_MACHINE_NAME + " natpf1 " + rule_name + "," + str(protocol) + ",," + str(porthost) + ",," + str(portdm)
+    return (exec_cmd(cmd), rule_name)
+
+# TODO Rules are removed but the command fails
+# Delete a binding rule from the docker-machine to the host
+# @param rule_name : The name of the rule to delete
+# @return : True or False according to the succes of the remove
+def binding_rule_remove(rule_name):
+    cmd = "VBoxManage controlvm " + DOCKER_MACHINE_NAME + " natpf1 delete " + rule_name
+    return exec_cmd(cmd)
 
 def main():
     print "---------- Functions testing ----------"

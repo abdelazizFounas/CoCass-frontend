@@ -41,11 +41,11 @@ def log_in(attempts):
 # @param password
 # @return : True or False according to the success of the authentication
 def api_log_in((username, password)):
-    url = common.SERVER_URL + "User/login/" + username + "/" + password
-    r = requests.request('POST', url)
-    if r.status_code == common.CODE_SUCCESS:
-        return True
-    return False
+    url = common.SERVER_URL + "User/login"
+    headers = {'content-type': 'application/json'}
+    payload = {'username': username, 'password': password}
+    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    return r.status_code == common.CODE_SUCCESS
 
 def send_system_config():
     ram = psutil.virtual_memory().total

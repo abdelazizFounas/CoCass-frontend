@@ -20,7 +20,7 @@ def main():
     elif(args.password):
         print restcall.create_user((common.query_string("Username : ", False), args.password, "", ""))
     else:
-        print restcall.create_user(common.get_logs())
+        print restcall.create_user(common.get_logs(), "", "")
 
 if __name__ == "__main__":
     main()

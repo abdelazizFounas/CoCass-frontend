@@ -11,7 +11,7 @@ import socket
 import os
 import requests
 import psutil
-import config
+import common
 import restcall
 import common
 
@@ -19,7 +19,9 @@ import common
 ON WORKING :
     - Send running configuration / Send configuration
     - Arguments
-    - Internet access to docker-machine + VPN
+    - Internet access to docker-machine -> Already set
+    - Docker-machine VPN access
+        -> Test : In a VM, set up a VPN network. Create a docker-machine and ssh in it. Try to ping the VPN server.
 
 Libraries :
     - docker
@@ -41,27 +43,26 @@ def check_installation():
     except Exception:
         return False
 
-# Get the information given by inspect of a docker-machine
-# @param name : The name of the docker-machine to get the configuration
-# @return : The inspect result of the docker-machine in a string array, '' if it does not exist
+# Check if a docker-machine exists by getting the information of the docker-machine inspect command
+# @param name : The name of the docker-machine to check
+# @return : True or False according to the existance of the docker-machine
 def check_docker_machine(name):
     cmd = "docker-machine inspect " + name
-    try:
-        subprocess.check_output(cmd.split()).split('\n')
-        return True
-    except Exception :
-        return False
+    return common.exec_cmd(cmd)
 
 # Start a docker-machine
 # @param name : The name of the docker-machine to start_docker_machine
 # @return : True or False according to the success of the docker-machine start
 def start_docker_machine(name):
     cmd = "docker-machine start " + name
-    try:
-        subprocess.check_output(cmd.split())
-        return True
-    except Exception:
-        return False
+    return common.exec_cmd(cmd)
+
+# Checks if a docker-machine is running by trying to get its IP address
+# @param name : The name of the docker-machine to check_output
+# @return : True or False according to if the docker-machine is running or not
+def is_dm_running(name):
+    cmd = "docker-machine ip " + name
+    return common.exec_cmd(cmd)
 
 # Create a docker-machine
 # This function will ask to the user if he want to give a specific configuration to the docker-machine
@@ -91,11 +92,7 @@ def create_docker_machine(name):
 # @return : True or false according to the success of the remove
 def remove_docker_machine(name):
     cmd = "docker-machine rm -y " + name
-    try:
-        subprocess.check_output(cmd.split()).split('\n')
-        return True
-    except Exception :
-        return False
+    return common.exec_cmd(cmd)
 
 # Switch the current docker-machine to another one
 # @param name : The name of the docker-machine to switch to
@@ -124,55 +121,31 @@ def get_free_port():
     s.close()
     return port
 
-# Bind a VirtualBox port on the physical host
-# @param portdm : The docker-machine's port to bind on the host
-# @param porthost : The corresponding port host to access to the docker-machine's one
-# @param protocol : Protocol to use on the port
-# @return : (bool, String) True or False according to the succes of the operation, with the name of the rule
-def binding_rule_create(porthost, portdm, protocol):
-    rule_name = "rule" + str(porthost) + protocol
-    cmd = "VBoxManage controlvm " + common.DOCKER_MACHINE_NAME + " natpf1 " + rule_name + "," + str(protocol) + ",," + str(porthost) + ",," + str(portdm)
-
-    try:
-        ps_creation = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-        cmd_bind_out, cmd_bind_error = ps_creation.communicate()
-        return (True, rule_name)
-    except Exception:
-        return (False, rule_name)
-
-# Delete a binding rule from the docker-machine to the host
-# @param rule_name : The name of the rule to delete
-# @return : True or False according to the succes of the remove
-def binding_rule_remove(rule_name):
-    cmd = "VBoxManage controlvm " + common.DOCKER_MACHINE_NAME + " natpf1 delete " + rule_name
-
-    try:
-        ps_creation = subprocess.Popen(cmd.split(), stdout=subprocess.PIPE)
-        cmd_bind_out, cmd_bind_error = ps_creation.communicate()
-        return True
-    except Exception:
-        return False
-
 def main():
     if check_installation():
-        if not start_docker_machine(common.DOCKER_MACHINE_NAME):
-            if check_docker_machine(common.DOCKER_MACHINE_NAME):
-                print "A docker-machine named " + common.DOCKER_MACHINE_NAME " already exists but can not be started. Let's remove it and create a new one !"
-                remove_docker_machine(common.DOCKER_MACHINE_NAME)
-            print "Before creating a new docker-machine, you need to register to send its configuration to the manager."
+
+        if not is_dm_running(common.DOCKER_MACHINE_NAME) and check_docker_machine(common.DOCKER_MACHINE_NAME) and not start_docker_machine(common.DOCKER_MACHINE_NAME):
+            # Docker-machine is not running, is created but cannot be started
+            print "A docker-machine named " + common.DOCKER_MACHINE_NAME + " already exists but can not be started. Let's remove it and create a new one !"
+            remove_docker_machine(common.DOCKER_MACHINE_NAME)
+
+        if not check_docker_machine(common.DOCKER_MACHINE_NAME):
             if not restcall.log_in(3):
                 sys.exit(1)
-            restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME))
+            create_docker_machine(common.DOCKER_MACHINE_NAME)
+            # TODO restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME))
 
         client = switch_dm(common.DOCKER_MACHINE_NAME)
 
-        rule_list.append(binding_rule_create(2377, 2377, "tcp"))[1]
-        rule_list.append(binding_rule_create(7946, 7946, "tcp"))[1]
-        rule_list.append(binding_rule_create(7946, 7946, "udp"))[1]
-        rule_list.append(binding_rule_create(4789, 4789, "udp"))[1]
+        rulesfile = open(common.RULE_FILE, 'w')
+        rulesfile.write("%s\n" % common.binding_rule_create(2377, 2377, "tcp")[1])
+        rulesfile.write("%s\n" % common.binding_rule_create(7946, 7946, "tcp")[1])
+        rulesfile.write("%s\n" % common.binding_rule_create(7946, 7946, "udp")[1])
+        rulesfile.write("%s\n" % common.binding_rule_create(4789, 4789, "udp")[1])
+        rulesfile.close()
 
         # TODO Review the listen_addr (eth1)
-        client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")
+        # client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")
     else:
         print "You first need to install docker, docker-machine and VirtualBox."
         sys.exit(1)
