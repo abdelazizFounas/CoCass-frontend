@@ -1,0 +1,37 @@
+<md-dialog flex = "30" aria-label="DemandRessource" ng-cloak>
+
+    <form name="demandRessourceForm" data-ng-submit="answer(nb_replicat)">
+
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Scale du service {{serviceToScale}} [{{nbContainersServiceToScale}} réplicats]</h2>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+
+                <md-input-container class="md-block">
+                    <label>Nombre de replicats</label>
+                    <input type="number" min="1" max="20" ng-model="nb_replicat" required>
+                </md-input-container>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+            <span flex></span>
+            <md-button  type="submit" class="md-primary"
+                       ng-class="{'md-raised md-hue-1': (demandRessourceForm.$dirty && demandRessourceForm.$valid) }"
+                       aria-label="Valider">
+                Valider
+            </md-button>
+            <md-button type="button" ng-click="cancel();"
+                       aria-label="Annuler">
+                Annuler
+            </md-button>
+        </md-dialog-actions>
+
+    </form>
+
+</md-dialog>

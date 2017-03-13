@@ -14,6 +14,8 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
   $scope.numberContainers = 0;
   $scope.numberImages = 0;
   $scope.numberMachines = 0;
+  $scope.serviceToScale = "";
+  $scope.nbContainersServiceToScale = 0;
 
   $scope.demand_ressource = function(ev) {
     $mdDialog.show({
@@ -52,6 +54,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
       }).then(function successCallback(response) {
         growl.success("Création du service " + name_service + " réussie!",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
+        $scope.updateServicesView();
       }, function errorCallback(response) {
         growl.error("Création du service échouée",{title: 'Erreur !', ttl: 3000});
       });
@@ -69,6 +72,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         url: '/Services/alldelete'
       }).then(function successCallback(response) {
         growl.success("Suppression des services réussie!",{title: 'Succès !', ttl: 3000});
+        $scope.updateServicesView();
       }, function errorCallback(response) {
         growl.error("Suppression des services non réussie.",{title: 'Erreur !', ttl: 3000});
       });
@@ -80,8 +84,47 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         event.stopPropagation();
       }
 
-      console.log(index);
+      $scope.serviceToScale = $scope.services[index].serviceName;
+      $scope.nbContainersServiceToScale = $scope.services[index].services.length;
+
+      $mdDialog.show({
+        controller: ScaleServiceController,
+        scope: this,
+        preserveScope: true,
+        templateUrl: 'html/scale-service.html',
+        parent: angular.element(document.body),
+        targetEvent: event,
+        clickOutsideToClose:true,
+        fullscreen: $scope.customFullscreen // Only for -xs, -sm breakpoints.
+      });
   };
+
+  function ScaleServiceController($scope, $mdDialog) {
+    $scope.hide = function() {
+      $mdDialog.hide();
+    };
+
+    $scope.cancel = function() {
+      $mdDialog.cancel();
+    };
+
+    $scope.answer = function(nb_replicat) {
+      $http({
+        method: 'POST',
+        url: '/Services/scale',
+        data: {
+          serviceName: $scope.serviceToScale,
+          replicas: nb_replicat
+        }
+      }).then(function successCallback(response) {
+        growl.success("Scale du service " + $scope.serviceToScale + " de " + $scope.nbContainersServiceToScale + " à " + nb_replicat + " réplicats réussie !",{title: 'Succès !', ttl: 3000});
+        $mdDialog.hide();
+        $scope.updateServicesView();
+      }, function errorCallback(response) {
+        growl.error("Scale du service échouée.",{title: 'Erreur !', ttl: 3000});
+      });
+    };
+  }
 
   $scope.delete_service = function(index, event) {
       if(event){
@@ -97,6 +140,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         }
       }).then(function successCallback(response) {
         growl.success("Suppression du service réussie!",{title: 'Succès !', ttl: 3000});
+        $scope.updateServicesView();
       }, function errorCallback(response) {
         growl.error("Suppression du service non réussie.",{title: 'Erreur !', ttl: 3000});
       });
@@ -116,96 +160,13 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         }
       }).then(function successCallback(response) {
         growl.success("Suppression du container réussie!",{title: 'Succès !', ttl: 3000});
+        $scope.updateServicesView();
       }, function errorCallback(response) {
         growl.error("Suppression du container non réussie.",{title: 'Erreur !', ttl: 3000});
       });
   };
 
-  $scope.services = [{
-      "replicas": "5",
-      "serviceName": "test2",
-      "services": [{
-          "NomService": "a-test2-1",
-          "commande": [
-              "ping",
-              "google.com"
-          ],
-          "datecreation": "2017-03-09T12:04:58.274487484Z",
-          "ipMachine": "127.0.0.1",
-          "nodeId": "pxdp401x0x3us01bi1do84auh",
-          "nomImage": "alpine:latest@sha256:58e1a1bb75db1b5a24a462dd5e2915277ea06438c3f105138f97eb53149673c4",
-          "nomMachine": "nyoce-HP-ProBook-450-G1",
-          "ports": "{80,30,40}",
-          "status": {
-              "CompletedAt": "0001-01-01T00:00:00Z",
-              "StartedAt": "0001-01-01T00:00:00Z"
-          }
-      }, {
-          "NomService": "a-test2-2",
-          "commande": [
-              "ping",
-              "google.com"
-          ],
-          "datecreation": "2017-03-09T12:04:59.839832158Z",
-          "ipMachine": "127.0.0.1",
-          "nodeId": "pxdp401x0x3us01bi1do84auh",
-          "nomImage": "alpine:latest@sha256:58e1a1bb75db1b5a24a462dd5e2915277ea06438c3f105138f97eb53149673c4",
-          "nomMachine": "nyoce-HP-ProBook-450-G1",
-          "ports": "{80,30,40}",
-          "status": {
-              "CompletedAt": "0001-01-01T00:00:00Z",
-              "StartedAt": "0001-01-01T00:00:00Z"
-          }
-      }, {
-          "NomService": "a-test2-3",
-          "commande": [
-              "ping",
-              "google.com"
-          ],
-          "datecreation": "2017-03-09T12:05:01.524325956Z",
-          "ipMachine": "127.0.0.1",
-          "nodeId": "pxdp401x0x3us01bi1do84auh",
-          "nomImage": "alpine:latest@sha256:58e1a1bb75db1b5a24a462dd5e2915277ea06438c3f105138f97eb53149673c4",
-          "nomMachine": "nyoce-HP-ProBook-450-G1",
-          "ports": "{80,30,40}",
-          "status": {
-              "CompletedAt": "0001-01-01T00:00:00Z",
-              "StartedAt": "0001-01-01T00:00:00Z"
-          }
-      }, {
-          "NomService": "a-test2-4",
-          "commande": [
-              "ping",
-              "google.com"
-          ],
-          "datecreation": "2017-03-09T12:05:05.291177797Z",
-          "ipMachine": "127.0.0.1",
-          "nodeId": "pxdp401x0x3us01bi1do84auh",
-          "nomImage": "alpine:latest@sha256:58e1a1bb75db1b5a24a462dd5e2915277ea06438c3f105138f97eb53149673c4",
-          "nomMachine": "nyoce-HP-ProBook-450-G1",
-          "ports": "{80,30,40}",
-          "status": {
-              "CompletedAt": "0001-01-01T00:00:00Z",
-              "StartedAt": "0001-01-01T00:00:00Z"
-          }
-      }, {
-          "NomService": "a-test2-5",
-          "commande": [
-              "ping",
-              "google.com"
-          ],
-          "datecreation": "2017-03-09T12:05:06.891237664Z",
-          "ipMachine": "127.0.0.1",
-          "nodeId": "pxdp401x0x3us01bi1do84auh",
-          "nomImage": "alpine:latest@sha256:58e1a1bb75db1b5a24a462dd5e2915277ea06438c3f105138f97eb53149673c4",
-          "nomMachine": "nyoce-HP-ProBook-450-G1",
-          "ports": "{80,30,40}",
-          "status": {
-              "CompletedAt": "0001-01-01T00:00:00Z",
-              "StartedAt": "0001-01-01T00:00:00Z"
-          }
-      }]
-  }];
+  $scope.services = [];
 
   $scope.updateServicesView = function() {
     $http({
@@ -245,14 +206,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
   }
 
   $(function() {
-    angular.forEach($scope.services, function(service) {
-      angular.forEach(service.services, function(container) {
-        container.nomImage = container.nomImage.split('@')[0];
-        container.datecreation = new Date(container.datecreation);
-      });
-    });
     $scope.updateServicesView();
-    $interval($scope.updateServicesView, 5000);
   });
 
 });
