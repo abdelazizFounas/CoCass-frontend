@@ -24,17 +24,18 @@ def create_user((username, password, firstname, lastname)):
 
 # User logging to the website
 # @param attempts : The number of logging attempts
-# @return : True or False, accordig to the success of the logging
+# @return : True or False, accordig to the success of the logging, with the last used logs
 def log_in(attempts):
     t = attempts
     while t > 0:
-        if not api_log_in(common.get_logs()):
+        logs = common.get_logs()
+        if not api_log_in(logs):
             t -= 1
             print "Log in failed. Attempts remaining : " + str(t)
         else:
             print "Login successfull."
-            return True
-    return False
+            return (True, logs)
+    return (False, logs)
 
 # Login to the server
 # @param username
@@ -68,12 +69,19 @@ def send_current_config():
 # Send the configuration to the common.SERVER_URL
 # @param config : A dict with KEY_CONFIG_CPU, common.KEY_CONFIG_RAM and common.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
 # @return : True or False according to the success of the registration
-def send_config(config):
-    url = common.SERVER_URL + "Providers/new/" + config[common.KEY_CONFIG_CPU] + "/" + config[common.KEY_CONFIG_RAM] + config[common.KEY_CONFIG_HDD]
-    r = requests.request('POST', url)
-    if r.status_code == common.CODE_SUCCESS:
-        return True
-    return False
+def send_config(config, username, password):
+    url = common.SERVER_URL + "Provider/new"
+    headers = {'content-type': 'application/json'}
+    payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password}
+    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    return r.status_code == common.CODE_SUCCESS
+
+def remove_worker((username, password)):
+    url = common.SERVER_URL + "Provider/delete"
+    headers = {'content-type': 'application/json'}
+    payload = {'username': username, 'password': password}
+    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    return r.status_code == common.CODE_SUCCESS
 
 def swarm_token():
     url = common.SERVER_URL + "swarm"
