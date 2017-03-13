@@ -27,9 +27,8 @@ Libraries :
     - docker
     - requests
     - psutil
+    - getpass
 '''
-
-rules_list = []
 
 # Installation checking
 # Checks if docker, docker-machine and virtualbox are installed
@@ -66,7 +65,7 @@ def is_dm_running(name):
 
 # Create a docker-machine
 # This function will ask to the user if he want to give a specific configuration to the docker-machine
-# TODO No interaction with user in a function ?
+# TODO No interaction with user in this function ?
 # @param name : The name of the docker-machine to create
 # @return : A dict containing the configuration of the docker machine, with 3 fields : ram, cpu and disk (-1 if not limited)
 def create_docker_machine(name):
@@ -111,16 +110,6 @@ def switch_dm(name):
         os.environ[current.split('=')[0]] = current.split('=')[1].replace('"', '')
     return docker.from_env()
 
-# Get a free port on the host
-# @return : Integer corresponding to the port number
-def get_free_port():
-    s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    s.bind(("",0))
-    s.listen(1)
-    port = s.getsockname()[1]
-    s.close()
-    return port
-
 def main():
     if check_installation():
 
@@ -137,12 +126,12 @@ def main():
 
         client = switch_dm(common.DOCKER_MACHINE_NAME)
 
-        rulesfile = open(common.RULE_FILE, 'w')
-        rulesfile.write("%s\n" % common.binding_rule_create(2377, 2377, "tcp")[1])
-        rulesfile.write("%s\n" % common.binding_rule_create(7946, 7946, "tcp")[1])
-        rulesfile.write("%s\n" % common.binding_rule_create(7946, 7946, "udp")[1])
-        rulesfile.write("%s\n" % common.binding_rule_create(4789, 4789, "udp")[1])
-        rulesfile.close()
+        success = True
+        for rule in common.NEEDED_RULES:
+            success = success and common.binding_rule_create(rule)
+        if not success:
+            print "Networking rules creation failed."
+            sys.exit(1)
 
         # TODO Review the listen_addr (eth1)
         # client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")

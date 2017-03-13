@@ -21,9 +21,7 @@ KEY_CONFIG_CPU = "cpu"
 KEY_CONFIG_RAM = "ram"
 KEY_CONFIG_HDD = "hdd"
 
-RULE_FILE = "rules.txt"
-
-
+NEEDED_RULES = [(2377, 2377, "tcp"), (7946, 7946, "tcp"), (7946, 7946, "udp"), (4789, 4789, "udp")]
 
 # Query a yes/no answer
 # Code from this post : https://stackoverflow.com/questions/3041986/apt-command-line-interface-like-yes-no-input
@@ -83,6 +81,9 @@ def get_logs():
     pswd = query_string("Password : ", True)
     return (user, pswd)
 
+# Execute a system command
+# @param cmd : A string representig the command to Execute
+# @return : True or False according to the success of the command's execution
 def exec_cmd(cmd):
     try:
         subprocess.check_output(cmd.split()).split('\n')
@@ -95,12 +96,11 @@ def exec_cmd(cmd):
 # @param porthost : The corresponding port host to access to the docker-machine's one
 # @param protocol : Protocol to use on the port
 # @return : (bool, String) True or False according to the succes of the operation, with the name of the rule
-def binding_rule_create(porthost, portdm, protocol):
+def binding_rule_create((porthost, portdm, protocol)):
     rule_name = "rule" + str(porthost) + protocol
     cmd = "VBoxManage controlvm " + DOCKER_MACHINE_NAME + " natpf1 " + rule_name + "," + str(protocol) + ",," + str(porthost) + ",," + str(portdm)
     return (exec_cmd(cmd), rule_name)
 
-# TODO Rules are removed but the command fails
 # Delete a binding rule from the docker-machine to the host
 # @param rule_name : The name of the rule to delete
 # @return : True or False according to the succes of the remove
