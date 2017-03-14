@@ -130,6 +130,8 @@ def main():
             print "Networking rules creation failed."
             sys.exit(1)
 
+        # restcall.send_system_config()
+
         # TODO Review the listen_addr (eth1)
         # client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")
     else:
