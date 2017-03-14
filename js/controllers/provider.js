@@ -9,18 +9,38 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
 
   $scope.mdDialogOpenned = 0;
 
-  $scope.cpuUsed = 4;
-  $scope.cpuTotal = 8;
-  $scope.ramUsed = 4;
-  $scope.ramTotal = 8;
-  $scope.hddUsed = 4;
-  $scope.hddTotal = 8;
+  $scope.cpuUsed = 0;
+  $scope.cpuTotal = 0;
+  $scope.ramUsed = 0;
+  $scope.ramTotal = 0;
+  $scope.hddUsed = 0;
+  $scope.hddTotal = 0;
 
-  $scope.cpuValue = 50;
-  $scope.ramValue = 50;
-  $scope.hddValue = 50;
+  $scope.cpuValue = 0;
+  $scope.ramValue = 0;
+  $scope.hddValue = 0;
 
   $scope.services = [];
+
+  $scope.updateProviderOverview = function() {
+    $http({
+      method: 'GET',
+      url: '/Providers/ressourcesInfos'
+    }).then(function successCallback(response) {
+      $scope.cpuUsed = response.data.cpuLimit;
+      $scope.cpuTotal = response.data.cpuMachine;
+      $scope.ramUsed = response.data.memorylimit;
+      $scope.ramTotal = response.data.memoryMachine;
+      $scope.hddUsed = response.data.storageLimit;
+      $scope.hddTotal = response.data.storageMachine;
+      $scope.cpuValue = response.data.cpuCurrent;
+      $scope.ramValue = response.data.memoryCurrent;
+      $scope.hddValue = response.data.storageCurrent;
+    }, function errorCallback(response) {
+      console.log(response);
+      console.log("Error while calling the update services view function.");
+    });
+  };
 
   $scope.insertDockerMachine = function(ev) {
     $mdDialog.show({
@@ -140,4 +160,9 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
       $mdDialog.hide();
     };
   }
+
+  $(function() {
+    $scope.updateProviderOverview();
+    setInterval($scope.updateProviderOverview, 60000);
+  });
 });
