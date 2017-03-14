@@ -9,17 +9,19 @@
         </md-toolbar>
 
         <md-dialog-content>
-          <uib-accordion close-others="true">
-            <div uib-accordion-group class="panel-default" heading="{{service.serviceName}}" ng-repeat="service in services">
-              <uib-accordion-heading>
-                    {{ service.serviceName }} avec {{ service.replicas }} replicas
-              </uib-accordion-heading>
-                La liste de containers :
-              <div ng-repeat="container in service.containers" >
-                NAME : {{container.containerName}} | IMAGE : {{container.image}} | DATE : {{container.creationDate | date:'Le dd/MM/yyyy à HH:mm:ss'}}
+          <div class="md-dialog-content">
+            <uib-accordion close-others="true">
+              <div uib-accordion-group class="panel-default" heading="{{service.serviceName}}" ng-repeat="service in services">
+                <uib-accordion-heading>
+                      {{ service.serviceName }} avec {{ service.replicas }} replicas
+                </uib-accordion-heading>
+                  La liste de containers :
+                <div ng-repeat="container in service.containers" >
+                  NAME : {{container.containerName}} | IMAGE : {{container.image}} | DATE : {{container.creationDate | date:'Le dd/MM/yyyy à HH:mm:ss'}}
+                </div>
               </div>
-            </div>
-          </uib-accordion>
+            </uib-accordion>
+          </div>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">

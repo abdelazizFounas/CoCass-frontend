@@ -24,7 +24,6 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
       method: 'GET',
       url: '/Provider'
     }).then(function successCallback(response) {
-      console.log(response);
       $scope.cpuUsed = response.data.cpuLimit;
       $scope.cpuTotal = response.data.cpuMachine;
       $scope.ramUsed = response.data.memorylimit;
