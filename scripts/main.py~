@@ -5,7 +5,6 @@ import argparse
 import sys
 import init
 import remove
-import monitoring
 
 def main(argv = None):
     parser = argparse.ArgumentParser(description='CoCass platform Python monitoring script. If this is the first time you use this script, launch it without arguments and follow the setup.')
@@ -18,7 +17,6 @@ def main(argv = None):
         remove.main()
     else:
         init.main()
-        monitoring.main()
 
 if __name__ == "__main__":
     sys.exit(main())
