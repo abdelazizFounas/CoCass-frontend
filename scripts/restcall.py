@@ -7,6 +7,7 @@ This Python script contains all the function to call the cocass rest API
 import common
 import requests
 import json
+import docker
 
 # Creates a new user
 # @param username
@@ -38,8 +39,7 @@ def log_in(attempts):
     return (False, logs)
 
 # Login to the server
-# @param username
-# @param password
+# @param (username, password) : The logs of the user
 # @return : True or False according to the success of the authentication
 def api_log_in((username, password)):
     url = common.SERVER_URL + "User/login"
@@ -48,22 +48,28 @@ def api_log_in((username, password)):
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
+# TODO
+# Send the system configuration
+# @return : True or False according to the success of the registration
 def send_system_config():
     ram = psutil.virtual_memory().total
     swap = psutil.swap_memory().total
     disk_total, disk_free = psutil.disk_usage('.').total, psutil.disk_usage('.').free
     cpu_nb = psutil.cpu_count()
     # url = common.SERVER_URL +
-    # TODO
 
 # TODO
-# Send the configuration
+# Send the current system configuration
+# @return : True or False according to the success of the sending
 def send_current_config():
+    # Detect wich CPU is used by the docker-machine -> Quite complicated : need to ssh to the docker-machine, and parse and calcul based on /proc/stat
     ram = psutil.virtual_memory().percent
     swap = psutil.swap_memory().percent
-    disk = 0 #TODO
-    # Detect wich CPU is used by the docker-machine
-    cpu_usage = psutil.cpu_percent(interval=1, percpu=True)
+
+    cmd = "docker-machine ssh " + common.DOCKER_MACHINE_NAME + " df /dev/sda1"
+    disk = int(filter(None, r[1].split(' '))[2])
+
+    cpu_usage = psutil.cpu_percent(interval=1, percpu=True) # CPU usage of the computer, not the docker-machine
     # url = common.SERVER_URL +
 
 # Send the configuration to the common.SERVER_URL
@@ -76,6 +82,9 @@ def send_config(config, username, password):
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
+# Unregister a worker to the server
+# @param (username, password) : A tupple representing the username and the password of the worker
+# @return : True or False according to the success of the request
 def remove_worker((username, password)):
     url = common.SERVER_URL + "Provider/delete"
     headers = {'content-type': 'application/json'}
@@ -83,6 +92,8 @@ def remove_worker((username, password)):
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
+# Get the token of a swarm from the server
+# @return : The token of the currently running swarm
 def swarm_token():
     url = common.SERVER_URL + "swarm"
     r = requests.get(url)

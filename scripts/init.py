@@ -7,19 +7,17 @@ Libraries :
     - docker
     - requests
     - psutil
-    - getpass
+    - passlib
 '''
 
 import docker
 import sys
 import subprocess
-import socket
 import os
 import requests
 import psutil
 import common
 import restcall
-import common
 
 '''
 ON WORKING :
