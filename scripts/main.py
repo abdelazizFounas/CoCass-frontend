@@ -35,7 +35,7 @@ def main():
         remove.main(username, password)
     else:
         init.main(username, password)
-        monitoring.main()
+        monitoring.main(username, password)
 
 if __name__ == "__main__":
     sys.exit(main())
