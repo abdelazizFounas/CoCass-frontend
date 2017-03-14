@@ -8,6 +8,7 @@ import common
 import requests
 import json
 import docker
+import psutil
 
 # Creates a new user
 # @param username
@@ -61,25 +62,36 @@ def send_system_config():
 # TODO
 # Send the current system configuration
 # @return : True or False according to the success of the sending
-def send_current_config():
+def send_current_config(username, password):
     # Detect wich CPU is used by the docker-machine -> Quite complicated : need to ssh to the docker-machine, and parse and calcul based on /proc/stat
-    ram = psutil.virtual_memory().percent
-    swap = psutil.swap_memory().percent
-
-    cmd = "docker-machine ssh " + common.DOCKER_MACHINE_NAME + " df /dev/sda1"
+    cmd_disk = "docker-machine ssh " + common.DOCKER_MACHINE_NAME + " df /dev/sda1"
+    r = subprocess.check_output(cmd_disk.split()).split('\n')
     disk = int(filter(None, r[1].split(' '))[2])
 
+    cmd_ram = "docker-machine ssh " + common.DOCKER_MACHINE_NAME + " free -m"
+    r = subprocess.check_output(cmd_ram.split()).split('\n')
+    ram = int(filter(None, r[1].split(' '))[3])
+
     cpu_usage = psutil.cpu_percent(interval=1, percpu=True) # CPU usage of the computer, not the docker-machine
-    # url = common.SERVER_URL +
+    url = common.SERVER_URL + 'Provider/update'
+    headers = {'content-type': 'application/json'}
+    payload = {'username': username, 'password': password, 'storageCurrent': disk, 'memoryCurrent': ram, 'cpuCurrent': str(cpu_usage)}
+    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    return r.status_code == common.CODE_SUCCESS
 
 # Send the configuration to the common.SERVER_URL
 # @param config : A dict with KEY_CONFIG_CPU, common.KEY_CONFIG_RAM and common.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
 # @return : True or False according to the success of the registration
 def send_config(config, username, password):
     url = common.SERVER_URL + "Provider/new"
+    ram = psutil.virtual_memory().total
+    disk_total, disk_free = psutil.disk_usage('.').total, psutil.disk_usage('.').free
+    cpu_nb = psutil.cpu_count()
+
     headers = {'content-type': 'application/json'}
-    payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password}
+    payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuLimit': cpu_nb, 'memorylimit': ram, 'storageLimit': disk_total, 'storageFree': disk_free}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
+
     return r.status_code == common.CODE_SUCCESS
 
 # Unregister a worker to the server

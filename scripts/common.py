@@ -6,6 +6,7 @@ This file containes all commons values/function for the CoCass script
 
 import getpass
 import sys
+import subprocess
 
 # Constants definition
 DOCKER_MACHINE_NAME = "dm-iaas"
@@ -86,7 +87,7 @@ def get_logs():
 # @return : True or False according to the success of the command's execution
 def exec_cmd(cmd):
     try:
-        subprocess.check_output(cmd.split()).split('\n')
+        subprocess.check_output(cmd.split())
         return True
     except Exception :
         return False
