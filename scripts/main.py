@@ -7,7 +7,14 @@ import init
 import remove
 import monitoring
 
-def main(argv = None):
+def main(username=None, password=None):
+    if username == None and password == None:
+        (result, logs) = restcall.log_in(3)[1]
+        if not result:
+            sys.exit(1)
+    else:
+        logs = (username, password)
+        
     parser = argparse.ArgumentParser(description='CoCass platform Python monitoring script. If this is the first time you use this script, launch it without arguments and follow the setup.')
 
     parser.add_argument('--rm', action="store_true", dest="remove", help="remove the docker-machine and leave the community")
