@@ -7,15 +7,12 @@ cocaas_app = angular.module('cocaasapp');
 cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) {
   $scope.provider();
 
-  $scope.mdDialogOpenned = 0;
-
   $scope.cpuUsed = 0;
   $scope.cpuTotal = 0;
   $scope.ramUsed = 0;
   $scope.ramTotal = 0;
   $scope.hddUsed = 0;
   $scope.hddTotal = 0;
-
   $scope.cpuValue = 0;
   $scope.ramValue = 0;
   $scope.hddValue = 0;
@@ -25,8 +22,9 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
   $scope.updateProviderOverview = function() {
     $http({
       method: 'GET',
-      url: '/Providers/ressourcesInfos'
+      url: '/Provider'
     }).then(function successCallback(response) {
+      console.log(response);
       $scope.cpuUsed = response.data.cpuLimit;
       $scope.cpuTotal = response.data.cpuMachine;
       $scope.ramUsed = response.data.memorylimit;
@@ -94,8 +92,6 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
   };
 
   $scope.usersContainers = function(ev) {
-    $scope.mdDialogOpenned = 1;
-
     $scope.refreshUsersContainers();
 
     $mdDialog.show({
@@ -112,14 +108,11 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
 
   function UsersContainersController($scope, $mdDialog) {
     $scope.close = function() {
-      $scope.mdDialogOpenned = 0;
       $mdDialog.hide();
     };
   }
 
   $scope.availableImages = function(ev) {
-    $scope.mdDialogOpenned = 2;
-
     $mdDialog.show({
       controller: AvailableImagesController,
       scope: this,
@@ -134,14 +127,11 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
 
   function AvailableImagesController($scope, $mdDialog) {
     $scope.close = function() {
-      $scope.mdDialogOpenned = 0;
       $mdDialog.hide();
     };
   }
 
   $scope.nodes = function(ev) {
-    $scope.mdDialogOpenned = 3;
-
     $mdDialog.show({
       controller: NodesController,
       scope: this,
@@ -156,7 +146,6 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
 
   function NodesController($scope, $mdDialog) {
     $scope.close = function() {
-      $scope.mdDialogOpenned = 0;
       $mdDialog.hide();
     };
   }
