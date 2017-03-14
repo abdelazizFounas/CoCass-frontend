@@ -1,6 +1,6 @@
-<md-dialog class="md-dialog-box" flex="70" aria-label="insertDockerMachine" ng-cloak>
+<md-dialog class="md-dialog-box" flex="70" aria-label="userContainers" ng-cloak>
 
-    <form name="insertDockerMachineForm">
+    <form name="userContainersForm">
 
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -9,25 +9,23 @@
         </md-toolbar>
 
         <md-dialog-content>
-            <uib-accordion close-others="true">
-              <div uib-accordion-group class="panel-default" heading="{{group.title}}" ng-repeat="group in groups">
-                <uib-accordion-heading>
-                  {{ group.title }}
-                  <md-button type="button" ng-click="test($index, $event)" aria-label="Test">Scale</md-button>
-                  <md-button type="button" ng-click="test($index, $event)" aria-label="Test">Supprimer</md-button>
-                </uib-accordion-heading>
-                {{group.content}}
-                <div ng-repeat="container in group.table">
-                  NAME : {{container.name}} | IP : {{container.ip}} | PORTS : {{container.ports}}
-                </div>
+          <uib-accordion close-others="true">
+            <div uib-accordion-group class="panel-default" heading="{{service.serviceName}}" ng-repeat="service in services">
+              <uib-accordion-heading>
+                    {{ service.serviceName }} avec {{ service.replicas }} replicas
+              </uib-accordion-heading>
+                La liste de containers :
+              <div ng-repeat="container in service.containers" >
+                NAME : {{container.containerName}} | IMAGE : {{container.image}} | DATE : {{container.creationDate | date:'Le dd/MM/yyyy à HH:mm:ss'}}
               </div>
-            </uib-accordion>
+            </div>
+          </uib-accordion>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
             <span flex></span>
-            <md-button class="md-raised md-warn" ng-href="script.sh">Télécharger le script d'installation</md-button>
-            <md-button type="button" ng-click="close()" aria-label="Close">Fermer</md-button>
+            <md-button class="md-raised md-primary" type="button" ng-click="refreshUsersContainers()" aria-label="Refresh">Rafraîchir</md-button>
+            <md-button class="md-raised md-warn" type="button" ng-click="close()" aria-label="Close">Fermer</md-button>
         </md-dialog-actions>
 
     </form>

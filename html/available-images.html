@@ -1,23 +1,23 @@
-<md-dialog class="md-dialog-box" flex="70" aria-label="insertDockerMachine" ng-cloak>
+<md-dialog class="md-dialog-box" flex="70" aria-label="availableImages" ng-cloak>
 
-    <form name="insertDockerMachineForm">
+    <form name="availableImagesForm">
 
         <md-toolbar>
             <div class="md-toolbar-tools">
-                <h2>Insérer Docker Machine</h2>
+                <h2>Les images sur votre noeud</h2>
             </div>
         </md-toolbar>
 
         <md-dialog-content>
-            <div class="md-dialog-content">
-                <p>Le tuto</p>
-            </div>
+          <div ng-repeat="image in images" >
+            NAME : {{image}}
+          </div>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
             <span flex></span>
-            <md-button class="md-raised md-warn" ng-href="scripts/script.sh">Télécharger le script d'installation</md-button>
-            <md-button type="button" ng-click="close()" aria-label="Close">Fermer</md-button>
+            <md-button class="md-raised md-primary" type="button" ng-click="refreshImages()" aria-label="Refresh">Rafraîchir</md-button>
+            <md-button class="md-raised md-warn" type="button" ng-click="close()" aria-label="Close">Fermer</md-button>
         </md-dialog-actions>
 
     </form>

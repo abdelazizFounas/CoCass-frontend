@@ -4,7 +4,7 @@
 
 cocaas_app = angular.module('cocaasapp');
 
-cocaas_app.controller("controllerProvider", function ($scope, $mdDialog) {
+cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) {
   $scope.provider();
 
   $scope.mdDialogOpenned = 0;
@@ -19,6 +19,8 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog) {
   $scope.cpuValue = 50;
   $scope.ramValue = 50;
   $scope.hddValue = 50;
+
+  $scope.services = [];
 
   $scope.insertDockerMachine = function(ev) {
     $mdDialog.show({
@@ -58,8 +60,23 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog) {
     };
   }
 
+  $scope.refreshUsersContainers = function() {
+    $http({
+      method: 'GET',
+      url: '/Providers/services'
+    }).then(function successCallback(response) {
+      $scope.services = response.data.services;
+      console.log(response);
+    }, function errorCallback(response) {
+      console.log(response);
+      console.log("Error while calling the update services view function.");
+    });
+  };
+
   $scope.usersContainers = function(ev) {
     $scope.mdDialogOpenned = 1;
+
+    $scope.refreshUsersContainers();
 
     $mdDialog.show({
       controller: UsersContainersController,
@@ -78,46 +95,6 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog) {
       $scope.mdDialogOpenned = 0;
       $mdDialog.hide();
     };
-
-    $scope.test = function(index, event) {
-      if(event){
-        event.preventDefault();
-        event.stopPropagation();
-      }
-
-      console.log(index);
-    };
-
-    $scope.groups = [
-      {
-        title: 'Service : toto.titi',
-        content: 'Tous les containers de toto.titi',
-        table: [{
-          name: 'toto.titi.1',
-          ip: '192.168.1.2',
-          ports: '80:760, 47:679'
-        },{
-          name: 'toto.titi.2',
-          ip: '192.168.1.2',
-          ports: '80:760, 47:679'
-        }
-        ]
-      },
-      {
-        title: 'Service : toto.tata',
-        content: 'Tous les containers de toto.tata',
-        table: [{
-          name: 'toto.tata.1',
-          ip: '192.168.1.2',
-          ports: '80:760, 47:679'
-        },{
-          name: 'toto.tata.1',
-          ip: '192.168.1.2',
-          ports: '80:760, 47:679'
-        }
-        ]
-      }
-    ];
   }
 
   $scope.availableImages = function(ev) {

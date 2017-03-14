@@ -1,6 +1,6 @@
-<md-dialog flex="20" aria-label="Login" ng-cloak>
+<md-dialog flex="20" aria-label="createDialog" ng-cloak>
 
-    <form name="loginForm" data-ng-submit="answer(firstname, lastname, mail, password)">
+    <form name="createDialogForm" data-ng-submit="answer(firstname, lastname, mail, password)">
 
         <md-toolbar>
             <div class="md-toolbar-tools">
@@ -34,12 +34,10 @@
 
         <md-dialog-actions layout="row">
             <span flex></span>
-            <md-button type="submit" class="md-primary"
-                       ng-class="{'md-raised md-hue-1': (loginForm.$dirty && loginForm.$valid) }"
-                       aria-label="Créer">
+            <md-button type="submit" class="md-raised md-primary" aria-label="Créer">
                 Créer
             </md-button>
-            <md-button type="button" ng-click="cancel();"
+            <md-button class="md-raised md-warn" type="button" ng-click="cancel();"
                        aria-label="Annuler">
                 Annuler
             </md-button>

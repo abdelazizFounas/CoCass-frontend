@@ -1,4 +1,4 @@
-<md-dialog flex = "30" aria-label="DemandRessource" ng-cloak>
+<md-dialog flex = "30" aria-label="demandRessource" ng-cloak>
 
     <form name="demandRessourceForm" data-ng-submit="answer(name_service,image_name,nb_replicat,list_ports,commande)">
 
@@ -27,25 +27,23 @@
 
                 <md-input-container class="md-block">
                     <label>Liste des ports a exportés (exemple: 80,90,100)</label>
-                    <input ng-model="list_ports" ng-pattern="/^[0-9]+(,[0-9]+)*$/" required> 
+                    <input ng-model="list_ports" ng-pattern="/^[0-9]+(,[0-9]+)*$/" required>
                 </md-input-container>
 
                 <md-input-container class="md-block">
                     <label>Commande</label>
                     <input ng-model="commande">
                 </md-input-container>
-               
+
             </div>
         </md-dialog-content>
 
         <md-dialog-actions layout="row">
             <span flex></span>
-            <md-button  type="submit" class="md-primary"
-                       ng-class="{'md-raised md-hue-1': (demandRessourceForm.$dirty && demandRessourceForm.$valid) }"
-                       aria-label="Valider">
+            <md-button  type="submit" class="md-raised md-primary" aria-label="Valider">
                 Valider
             </md-button>
-            <md-button type="button" ng-click="cancel();"
+            <md-button class="md-raised md-warn" type="button" ng-click="cancel();"
                        aria-label="Annuler">
                 Annuler
             </md-button>
