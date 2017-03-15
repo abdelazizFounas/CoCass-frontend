@@ -11,8 +11,8 @@ import subprocess
 # Constants definition
 DOCKER_MACHINE_NAME = "dm-iaas"
 
-SERVER_IP = "localhost"
-SERVER_PORT = "5000"
+SERVER_IP = "10.10.0.1"
+SERVER_PORT = "80"
 SERVER_URL = "http://" + SERVER_IP + ":" + SERVER_PORT + "/"
 
 CODE_SUCCESS = 202
