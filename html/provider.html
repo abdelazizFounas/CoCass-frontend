@@ -1,15 +1,23 @@
 <div>
   <!-- Page Heading -->
-  <div class="row">
+  <div ng-show="!isProvider" class="row">
+      <div class="col-lg-12">
+          <h1 class="page-header">
+              Vous n'êtes pas enregistré en tant que Provider
+          </h1>
+      </div>
+  </div>
+
+  <!-- Page Heading -->
+  <div ng-show="isProvider" class="row">
       <div class="col-lg-12">
           <h1 class="page-header">
               Provider
           </h1>
       </div>
   </div>
-  <!-- /.row -->
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
        <div class="col-lg-12">
            <h2 class="page-header">
                Gestion de la Docker Machine
@@ -17,7 +25,7 @@
        </div>
    </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
     <div class="col-lg-12">
       <div class="col-lg-6 center-button">
         <md-button class="md-raised md-primary" ng-click="insertDockerMachine($event)">Insérer Docker Machine</md-button>
@@ -29,7 +37,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
        <div class="col-lg-12">
            <h2 class="page-header">
                Information de la Docker Machine
@@ -37,7 +45,7 @@
        </div>
    </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
     <div class="col-lg-12">
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
@@ -57,7 +65,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
        <div class="col-lg-12">
            <h2 class="page-header">
                Etat de la Docker Machine
@@ -65,7 +73,7 @@
        </div>
    </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
     <div class="col-lg-12">
       <div class="col-lg-4">
         <div class="col-lg-offset-1 col-lg-10 gauge">
@@ -85,7 +93,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
        <div class="col-lg-12">
            <h2 class="page-header">
                Information sur le provider
@@ -93,7 +101,7 @@
        </div>
    </div>
 
-  <div class="row">
+  <div ng-show="isProvider" class="row">
     <div class="col-lg-12">
       <div class="col-lg-4 center-button">
         <md-button class="md-raised md-primary" ng-click="usersContainers($event)">Containers utilisateurs</md-button>

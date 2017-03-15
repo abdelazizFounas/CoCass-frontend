@@ -7,6 +7,8 @@ cocaas_app = angular.module('cocaasapp');
 cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) {
   $scope.provider();
 
+  $scope.isProvider = false;
+
   $scope.cpuUsed = 0;
   $scope.cpuTotal = 0;
   $scope.ramUsed = 0;
@@ -24,6 +26,7 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
       method: 'GET',
       url: '/Provider'
     }).then(function successCallback(response) {
+      $scope.isProvider = true;
       $scope.cpuUsed = response.data.cpuLimit;
       $scope.cpuTotal = response.data.cpuMachine;
       $scope.ramUsed = response.data.memorylimit;
@@ -34,6 +37,7 @@ cocaas_app.controller("controllerProvider", function ($scope, $mdDialog, $http) 
       $scope.ramValue = response.data.memoryCurrent;
       $scope.hddValue = response.data.storageCurrent;
     }, function errorCallback(response) {
+      $scope.isProvider = false;
       console.log(response);
       console.log("Error while calling the update services view function.");
     });
