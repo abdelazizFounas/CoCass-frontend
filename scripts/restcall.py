@@ -9,6 +9,7 @@ import requests
 import json
 import docker
 import psutil
+import subprocess
 
 # Definition of all URLs
 URL_USER_CREATE = common.SERVER_URL + "User/new"
