@@ -128,7 +128,10 @@ def main(username=None, password=None, custom = True):
         client = switch_dm(common.DOCKER_MACHINE_NAME)
 
         listen_ip = netifaces.ifaddresses(common.LOCAL_NET_INTERFACE)[2][0]['addr']
-        client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr=listen_ip)
+        try:
+            client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr=listen_ip)
+        except docker.errors.APIError:
+            print "The server sent an error. If it says that a new try will be performed in background, that's all right. However... Ctrl + C :D"
     else:
         print "You first need to install docker, docker-machine and VirtualBox."
         sys.exit(1)
