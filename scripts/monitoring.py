@@ -1,8 +1,8 @@
 import sched, time
-from restcall.py import send_current_config
+from restcall import send_current_config
 
-def loop(sc): 
-	send_current_config()   
+def loop(sc):
+	send_current_config()
 	s.enter(1, 1, loop, (sc,)) # first argument defines the delta of seconds between every call
 
 

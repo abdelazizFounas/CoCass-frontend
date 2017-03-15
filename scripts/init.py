@@ -58,10 +58,8 @@ def is_dm_running(name):
 # TODO No interaction with user in this function ?
 # @param name : The name of the docker-machine to create
 # @return : A dict containing the configuration of the docker machine, with 3 fields : ram, cpu and disk (-1 if not limited)
-def create_docker_machine(name):
-    limited_dm = False
-    if common.query_yes_no("Define a docker-machine with limited ressources ?"):
-        limited_dm = True
+def create_docker_machine(name, custom = True):
+    if custom and common.query_yes_no("Define a docker-machine with custom ressources ?"):
         ram = common.query_int("\tRAM (Mo) : ")
         cpu = common.query_int("\tNumber of CPU : ")
         disk = common.query_int("\tDisk space (Go) : ")
@@ -69,7 +67,7 @@ def create_docker_machine(name):
         config = {common.KEY_CONFIG_RAM: str(ram), common.KEY_CONFIG_CPU: str(cpu), common.KEY_CONFIG_HDD: str(disk)}
     else:
         cmd_create_dm = "docker-machine create -d virtualbox " + name
-        config = {common.KEY_CONFIG_RAM: "-1", common.KEY_CONFIG_CPU: "-1", common.KEY_CONFIG_HDD: "-1"}
+        config = {common.KEY_CONFIG_RAM: "1", common.KEY_CONFIG_CPU: "1", common.KEY_CONFIG_HDD: "18"}
 
     ps_creation = subprocess.Popen(cmd_create_dm.split(), stdout=subprocess.PIPE)
     create_dm_out, check_dm_error = ps_creation.communicate()
@@ -100,7 +98,7 @@ def switch_dm(name):
         os.environ[current.split('=')[0]] = current.split('=')[1].replace('"', '')
     return docker.from_env()
 
-def main(username=None, password=None):
+def main(username=None, password=None, custom = True):
 
     if check_installation():
 
@@ -116,7 +114,7 @@ def main(username=None, password=None):
 
         check_docker_machine(common.DOCKER_MACHINE_NAME)
         if not check_docker_machine(common.DOCKER_MACHINE_NAME):
-            restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME), username, password)
+            restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME, custom), username, password)
 
         client = switch_dm(common.DOCKER_MACHINE_NAME)
 

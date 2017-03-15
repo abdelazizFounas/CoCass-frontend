@@ -49,7 +49,6 @@ def api_log_in((username, password)):
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
-# TODO
 # Send the system configuration
 # @return : True or False according to the success of the registration
 def send_system_config():
@@ -59,7 +58,6 @@ def send_system_config():
     cpu_nb = psutil.cpu_count()
     # url = common.SERVER_URL +
 
-# TODO
 # Send the current system configuration
 # @return : True or False according to the success of the sending
 def send_current_config(username, password):
@@ -73,23 +71,23 @@ def send_current_config(username, password):
     ram = int(filter(None, r[1].split(' '))[3])
 
     cpu_usage = psutil.cpu_percent(interval=1, percpu=True) # CPU usage of the computer, not the docker-machine
+
     url = common.SERVER_URL + 'Provider/update'
     headers = {'content-type': 'application/json'}
     payload = {'username': username, 'password': password, 'storageCurrent': disk, 'memoryCurrent': ram, 'cpuCurrent': str(cpu_usage)}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
+# TODO
 # Send the configuration to the common.SERVER_URL
 # @param config : A dict with KEY_CONFIG_CPU, common.KEY_CONFIG_RAM and common.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
 # @return : True or False according to the success of the registration
 def send_config(config, username, password):
     url = common.SERVER_URL + "Provider/new"
-    ram = psutil.virtual_memory().total
-    disk_total, disk_free = psutil.disk_usage('.').total, psutil.disk_usage('.').free
     cpu_nb = psutil.cpu_count()
 
     headers = {'content-type': 'application/json'}
-    payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuLimit': cpu_nb, 'memorylimit': ram, 'storageLimit': disk_total, 'storageFree': disk_free}
+    payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuLimit': cpu_nb}
     r = requests.post(url, data=json.dumps(payload), headers=headers)
 
     return r.status_code == common.CODE_SUCCESS

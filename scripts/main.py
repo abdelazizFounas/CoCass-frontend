@@ -24,6 +24,7 @@ def main():
     parser = argparse.ArgumentParser(description='CoCass platform Python monitoring script. If this is the first time you use this script, launch it without arguments and follow the setup.')
 
     parser.add_argument('--rm', action="store_true", dest="remove", help="remove the docker-machine and leave the community")
+    parser.add_argument('-p', '--preset-dm', action="store_true", dest="preset_dm", help="use preset docker-machine limitation")
 
     args = parser.parse_args()
 
@@ -32,7 +33,7 @@ def main():
         sys.exit(1)
 
     if args.remove:
-        remove.main(username, password)
+        remove.main(username, password, args.preset_dm)
     else:
         init.main(username, password)
         monitoring.main()
