@@ -11,6 +11,7 @@ import os
 import requests
 import common
 import restcall
+import netifaces
 
 '''
 ON WORKING :
@@ -28,6 +29,7 @@ def check_installation():
         subprocess.check_output(["docker", "version"])
         subprocess.check_output(["docker-machine", "version"])
         subprocess.check_output(["virtualbox", "--help"])
+        subprocess.check_output(["openvpn", "--help"])
         return True
     except Exception:
         return False
@@ -125,8 +127,8 @@ def main(username=None, password=None, custom = True):
 
         client = switch_dm(common.DOCKER_MACHINE_NAME)
 
-        # TODO Review the listen_addr (eth1)
-        # client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")
+        listen_ip = netifaces.ifaddresses(common.LOCAL_NET_INTERFACE)[2][0]['addr']
+        client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr=listen_ip)
     else:
         print "You first need to install docker, docker-machine and VirtualBox."
         sys.exit(1)

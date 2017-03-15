@@ -22,6 +22,8 @@ KEY_CONFIG_CPU = "cpu"
 KEY_CONFIG_RAM = "ram"
 KEY_CONFIG_HDD = "hdd"
 
+LOCAL_NET_INTERFACE = "tun0"
+
 NEEDED_RULES = [(2377, 2377, "tcp"), (7946, 7946, "tcp"), (7946, 7946, "udp"), (4789, 4789, "udp")]
 
 # Query a yes/no answer

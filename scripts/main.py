@@ -10,6 +10,7 @@ Libraries :
     - requests
     - psutil
     - passlib
+    - netifaces
 '''
 
 import argparse
