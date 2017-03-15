@@ -1,8 +1,5 @@
 /*
  * CoCaas - Swarm
- * /Services/alldelete
- * /Services/delete -> nameservice
- * /Containers/delete -> nameservicedocker
  */
 
 cocaas_app = angular.module('cocaasapp');
@@ -16,6 +13,9 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
   $scope.numberMachines = 0;
   $scope.serviceToScale = "";
   $scope.nbContainersServiceToScale = 0;
+
+  $scope.buttonDemandDisabled = false;
+  $scope.buttonScaleDisabled = false;
 
   $scope.demand_ressource = function(ev) {
     $mdDialog.show({
@@ -40,6 +40,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
     };
 
     $scope.answer = function(name_service,image_name,nb_replicat,list_ports,commande) {
+      $scope.buttonDemandDisabled = true;
       listports=list_ports.replace(/ /g,'').split(",").map(Number)
       $http({
         method: 'POST',
@@ -55,7 +56,9 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         growl.success("Création du service " + name_service + " réussie!",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
         $scope.updateServicesView();
+        $scope.buttonDemandDisabled = false;
       }, function errorCallback(response) {
+        $scope.buttonDemandDisabled = false;
         growl.error("Création du service échouée",{title: 'Erreur !', ttl: 3000});
       });
     };
@@ -109,6 +112,7 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
     };
 
     $scope.answer = function(nb_replicat) {
+      $scope.buttonScaleDisabled = true;
       $http({
         method: 'POST',
         url: '/Services/scale',
@@ -120,7 +124,9 @@ cocaas_app.controller("controllerClient", function ($scope, $mdDialog, $http, gr
         growl.success("Scale du service " + $scope.serviceToScale + " de " + $scope.nbContainersServiceToScale + " à " + nb_replicat + " réplicats réussie !",{title: 'Succès !', ttl: 3000});
         $mdDialog.hide();
         $scope.updateServicesView();
+        $scope.buttonScaleDisabled = false;
       }, function errorCallback(response) {
+        $scope.buttonScaleDisabled = false;
         growl.error("Scale du service échouée.",{title: 'Erreur !', ttl: 3000});
       });
     };
