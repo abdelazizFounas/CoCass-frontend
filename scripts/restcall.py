@@ -10,6 +10,14 @@ import json
 import docker
 import psutil
 
+# Definition of all URLs
+URL_USER_CREATE = common.SERVER_URL + "User/new"
+URL_USER_LOGIN = common.SERVER_URL + "User/login"
+URL_PRODIVER_UPDATE = common.SERVER_URL + 'Provider/update'
+URL_PROVIDER_NEW = common.SERVER_URL + "Provider/new"
+URL_PROVIDER_DELETE = common.SERVER_URL + "Provider/delete"
+URL_SWARM = common.SERVER_URL + "swarm"
+
 # Creates a new user
 # @param username
 # @param password
@@ -17,10 +25,9 @@ import psutil
 # @param lastname
 # @return : True or False according to the success of the creation
 def create_user((username, password, firstname, lastname)):
-    url = common.SERVER_URL + "User/new"
     headers = {'content-type': 'application/json'}
     payload = {'username': username, 'password': password, 'firstname': firstname, 'lastname':lastname}
-    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    r = requests.post(URL_USER_CREATE, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
 
@@ -43,20 +50,10 @@ def log_in(attempts):
 # @param (username, password) : The logs of the user
 # @return : True or False according to the success of the authentication
 def api_log_in((username, password)):
-    url = common.SERVER_URL + "User/login"
     headers = {'content-type': 'application/json'}
     payload = {'username': username, 'password': password}
-    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    r = requests.post(URL_USER_LOGIN, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
-
-# Send the system configuration
-# @return : True or False according to the success of the registration
-def send_system_config():
-    ram = psutil.virtual_memory().total
-    swap = psutil.swap_memory().total
-    disk_total, disk_free = psutil.disk_usage('.').total, psutil.disk_usage('.').free
-    cpu_nb = psutil.cpu_count()
-    # url = common.SERVER_URL +
 
 # Send the current system configuration
 # @return : True or False according to the success of the sending
@@ -72,10 +69,9 @@ def send_current_config(username, password):
 
     cpu_usage = psutil.cpu_percent(interval=1, percpu=True) # CPU usage of the computer, not the docker-machine
 
-    url = common.SERVER_URL + 'Provider/update'
     headers = {'content-type': 'application/json'}
     payload = {'username': username, 'password': password, 'storageCurrent': disk, 'memoryCurrent': ram, 'cpuCurrent': str(cpu_usage)}
-    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    r = requests.post(URL_PRODIVER_UPDATE, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
 # TODO
@@ -83,12 +79,11 @@ def send_current_config(username, password):
 # @param config : A dict with KEY_CONFIG_CPU, common.KEY_CONFIG_RAM and common.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
 # @return : True or False according to the success of the registration
 def send_config(config, username, password):
-    url = common.SERVER_URL + "Provider/new"
     cpu_nb = psutil.cpu_count()
 
     headers = {'content-type': 'application/json'}
     payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuLimit': cpu_nb}
-    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    r = requests.post(URL_PROVIDER_NEW, data=json.dumps(payload), headers=headers)
 
     return r.status_code == common.CODE_SUCCESS
 
@@ -96,15 +91,13 @@ def send_config(config, username, password):
 # @param (username, password) : A tupple representing the username and the password of the worker
 # @return : True or False according to the success of the request
 def remove_worker((username, password)):
-    url = common.SERVER_URL + "Provider/delete"
     headers = {'content-type': 'application/json'}
     payload = {'username': username, 'password': password}
-    r = requests.post(url, data=json.dumps(payload), headers=headers)
+    r = requests.post(URL_PROVIDER_DELETE, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
 # Get the token of a swarm from the server
 # @return : The token of the currently running swarm
 def swarm_token():
-    url = common.SERVER_URL + "swarm"
-    r = requests.get(url)
+    r = requests.get(URL_SWARM)
     return r.json()['swarmToken']
