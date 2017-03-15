@@ -116,14 +116,14 @@ def main(username=None, password=None, custom = True):
         if not check_docker_machine(common.DOCKER_MACHINE_NAME):
             restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME, custom), username, password)
 
-        client = switch_dm(common.DOCKER_MACHINE_NAME)
+            success = True
+            for rule in common.NEEDED_RULES:
+                success = success and common.binding_rule_create(rule)
+            if not success:
+                print "Networking rules creation failed."
+                sys.exit(1)
 
-        success = True
-        for rule in common.NEEDED_RULES:
-            success = success and common.binding_rule_create(rule)
-        if not success:
-            print "Networking rules creation failed."
-            sys.exit(1)
+        client = switch_dm(common.DOCKER_MACHINE_NAME)
 
         # TODO Review the listen_addr (eth1)
         # client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr="eth1")

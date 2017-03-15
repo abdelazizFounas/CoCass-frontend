@@ -1,10 +1,12 @@
 import sched, time
 from restcall import send_current_config
 
+s = sched.scheduler(time.time, time.sleep)
 
-def loop(sc, username, password): 
-	send_current_config(username, password)
-	s.enter(1, 1, loop, (sc,)) # first argument defines the delta of seconds between every call
+def loop(sc, username, password):
+	if not send_current_config(username, password):
+		print "Communication with the server failed."
+	s.enter(1, 1, loop, (sc, username, password)) # first argument defines the delta of seconds between every call
 
 
 def main(username=None, password=None):
@@ -14,6 +16,6 @@ def main(username=None, password=None):
             sys.exit(1)
     else:
         logs = (username, password)
-	s = sched.scheduler(time.time, time.sleep)
-	s.enter(1, 1, loop, (s,username, password,))
+
+	s.enter(1, 1, loop, (s, username, password,))
 	s.run()
