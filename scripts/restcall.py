@@ -83,7 +83,7 @@ def send_config(config, username, password):
     cpu_nb = psutil.cpu_count()
 
     headers = {'content-type': 'application/json'}
-    payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuLimit': cpu_nb}
+    payload = {'cpuLimit': config[common.KEY_CONFIG_CPU], 'memoryLimit': config[common.KEY_CONFIG_RAM], 'storageLimit': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuMachine': cpu_nb, "memoryMachine": , "storageMachine":}
     r = requests.post(URL_PROVIDER_NEW, data=json.dumps(payload), headers=headers)
 
     return r.status_code == common.CODE_SUCCESS
