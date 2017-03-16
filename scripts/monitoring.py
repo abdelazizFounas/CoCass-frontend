@@ -6,7 +6,7 @@ s = sched.scheduler(time.time, time.sleep)
 def loop(sc, username, password):
 	if not send_current_config(username, password):
 		print "Communication with the server failed."
-	s.enter(1, 1, loop, (sc, username, password)) # first argument defines the delta of seconds between every call
+	s.enter(60, 1, loop, (sc, username, password)) # first argument defines the delta of seconds between every call
 
 
 def main(username=None, password=None):
@@ -17,5 +17,5 @@ def main(username=None, password=None):
     else:
         logs = (username, password)
 
-	s.enter(1, 1, loop, (s, username, password,))
+	s.enter(60, 1, loop, (s, username, password,))
 	s.run()
