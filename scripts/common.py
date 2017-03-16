@@ -24,7 +24,7 @@ KEY_CONFIG_HDD = "hdd"
 
 LOCAL_NET_INTERFACE = "tun0"
 
-NEEDED_RULES = [(2377, 2377, "tcp"), (7946, 7946, "tcp"), (7946, 7946, "udp"), (4789, 4789, "udp")]
+NEEDED_RULES = [(2376, 2376, "tcp"), (2376, 2376, "udp"), (2377, 2377, "tcp"), (7946, 7946, "tcp"), (7946, 7946, "udp"), (4789, 4789, "udp")]
 
 # Query a yes/no answer
 # Code from this post : https://stackoverflow.com/questions/3041986/apt-command-line-interface-like-yes-no-input
