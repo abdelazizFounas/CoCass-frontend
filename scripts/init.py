@@ -29,7 +29,7 @@ def check_installation():
         subprocess.check_output(["docker", "version"])
         subprocess.check_output(["docker-machine", "version"])
         subprocess.check_output(["virtualbox", "--help"])
-        subprocess.check_output(["openvpn", "--help"])
+        # subprocess.check_output(["openvpn", "--help"])
         return True
     except Exception:
         return False
