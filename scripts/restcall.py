@@ -69,9 +69,10 @@ def send_current_config(username, password):
     ram = int(filter(None, r[1].split(' '))[3])
 
     cpu_usage = psutil.cpu_percent(interval=1, percpu=True) # CPU usage of the computer, not the docker-machine
+    cpu_average = sum(cpu_usage) / len(cpu_usage)
 
     headers = {'content-type': 'application/json'}
-    payload = {'username': username, 'password': password, 'storageCurrent': disk, 'memoryCurrent': ram, 'cpuCurrent': str(cpu_usage)}
+    payload = {'username': username, 'password': password, 'storageCurrent': disk, 'memoryCurrent': ram, 'cpuCurrent': cpu_average}
     r = requests.post(URL_PRODIVER_UPDATE, data=json.dumps(payload), headers=headers)
     return r.status_code == common.CODE_SUCCESS
 
@@ -80,7 +81,12 @@ def send_current_config(username, password):
 # @param config : A dict with KEY_CONFIG_CPU, common.KEY_CONFIG_RAM and common.KEY_CONFIG_HDD representing the configuration of the docker-machine to register
 # @return : True or False according to the success of the registration
 def send_config(config, username, password):
+    # CPU core
     cpu_nb = psutil.cpu_count()
+    # Total RAM PC
+    ram = psutil.virtual_memory()[1]
+    # HDD PC (used/free)
+    hdd_total, hdd_percent = psutil.disk_usage('/')[0], psutil.disk_usage('/')[3]
 
     headers = {'content-type': 'application/json'}
     payload = {'nbCPU': config[common.KEY_CONFIG_CPU], 'nbMemory': config[common.KEY_CONFIG_RAM], 'nbStockage': config[common.KEY_CONFIG_HDD], 'username': username, 'password': password, 'cpuLimit': cpu_nb}
