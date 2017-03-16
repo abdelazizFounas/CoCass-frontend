@@ -114,9 +114,8 @@ def main(username=None, password=None, custom = True):
             print "A docker-machine named " + common.DOCKER_MACHINE_NAME + " already exists but can not be started. Let's remove it and create a new one !"
             remove_docker_machine(common.DOCKER_MACHINE_NAME)
 
-        check_docker_machine(common.DOCKER_MACHINE_NAME)
         if not check_docker_machine(common.DOCKER_MACHINE_NAME):
-            restcall.send_config(create_docker_machine(common.DOCKER_MACHINE_NAME, custom), username, password)
+            config = create_docker_machine(common.DOCKER_MACHINE_NAME, custom)
 
             success = True
             for rule in common.NEEDED_RULES:
@@ -132,6 +131,8 @@ def main(username=None, password=None, custom = True):
             client.swarm.join(remote_addrs=[common.SERVER_IP], join_token=restcall.swarm_token(), listen_addr=listen_ip)
         except docker.errors.APIError:
             print "The server sent an error. If it says that a new try will be performed in background, that's all right. However... Ctrl + C :D"
+
+        restcall.send_config(config, username, password)
     else:
         print "You first need to install docker, docker-machine and VirtualBox."
         sys.exit(1)
